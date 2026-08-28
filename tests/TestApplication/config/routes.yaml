@@ -1,0 +1,5 @@
+guiziweb_sylius_token_admin:
+    resource: "@GuiziwebSyliusTokenPlugin/config/routes/admin.yaml"
+
+guiziweb_sylius_token_shop:
+    resource: "@GuiziwebSyliusTokenPlugin/config/routes/shop.yaml"
