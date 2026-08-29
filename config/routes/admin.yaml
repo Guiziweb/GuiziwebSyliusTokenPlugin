@@ -21,3 +21,19 @@ guiziweb_sylius_token_admin_tariff:
                 icon: 'tabler:receipt'
     type: sylius.resource
     prefix: /
+
+guiziweb_sylius_token_admin_wallet_index:
+    path: /token-wallets
+    methods: [GET]
+    defaults:
+        _controller: guiziweb_sylius_token.controller.wallet::indexAction
+        _sylius:
+            section: admin
+            template: "@GuiziwebSyliusTokenPlugin/admin/wallet/index.html.twig"
+            grid: guiziweb_sylius_token_admin_wallet
+
+guiziweb_sylius_token_admin_wallet_adjust:
+    path: /token-wallets/{id}/adjust
+    methods: [GET, POST]
+    defaults:
+        _controller: Guiziweb\SyliusTokenPlugin\Controller\Admin\WalletAdjustmentController

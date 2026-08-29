@@ -16,6 +16,7 @@ final readonly class TokenCredit
         public TokenBatchOrigin $origin = TokenBatchOrigin::Purchase,
         public ?\DateTimeImmutable $expiresAt = null,
         public ?OrderInterface $order = null,
+        public ?string $reason = null,
         public ?PurchasePrice $price = null,
     ) {
     }

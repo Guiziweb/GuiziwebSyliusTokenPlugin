@@ -41,6 +41,9 @@ class TokenTransaction implements TokenTransactionInterface
     #[ORM\JoinColumn(name: 'order_id', nullable: true, onDelete: 'SET NULL')]
     protected ?OrderInterface $order = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    protected ?string $reason = null;
+
     #[ORM\Column(name: 'created_at', type: 'datetime_immutable')]
     protected \DateTimeImmutable $createdAt;
 
@@ -51,6 +54,7 @@ class TokenTransaction implements TokenTransactionInterface
         string $idempotencyKey,
         \DateTimeImmutable $createdAt,
         ?OrderInterface $order = null,
+        ?string $reason = null,
     ) {
         if (0 === $amount) {
             throw new \InvalidArgumentException('A ledger entry cannot have a zero amount.');
@@ -63,6 +67,7 @@ class TokenTransaction implements TokenTransactionInterface
         $this->idempotencyKey = $idempotencyKey;
         $this->createdAt = $createdAt;
         $this->order = $order;
+        $this->reason = $reason;
     }
 
     public function getId(): ?int
@@ -98,6 +103,11 @@ class TokenTransaction implements TokenTransactionInterface
     public function getOrder(): ?OrderInterface
     {
         return $this->order;
+    }
+
+    public function getReason(): ?string
+    {
+        return $this->reason;
     }
 
     public function getCreatedAt(): \DateTimeImmutable

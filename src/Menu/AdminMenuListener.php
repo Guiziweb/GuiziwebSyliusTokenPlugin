@@ -23,6 +23,12 @@ final class AdminMenuListener
         ;
 
         $catalog
+            ->addChild('guiziweb_token_wallets', ['route' => 'guiziweb_sylius_token_admin_wallet_index'])
+            ->setLabel('guiziweb_sylius_token.ui.wallets')
+            ->setLabelAttribute('icon', 'tabler:wallet')
+        ;
+
+        $catalog
             ->addChild('guiziweb_token_tariffs', ['route' => 'guiziweb_sylius_token_admin_tariff_index'])
             ->setLabel('guiziweb_sylius_token.ui.tariffs')
             ->setLabelAttribute('icon', 'tabler:receipt')

@@ -1,11 +1,25 @@
 guiziweb_sylius_token:
+    flash:
+        credited: 'Tokens have been added to the wallet.'
+        debited: 'Tokens have been removed from the wallet.'
+        insufficient_balance: 'This wallet does not hold enough tokens.'
     form:
+        adjustment:
+            direction: 'Operation'
+            amount: 'Tokens'
+            reason: 'Reason'
+            reason_help: 'Kept in the ledger so the movement stays explainable later.'
         tariff:
             cost: 'Cost in tokens'
             cost_help: 'How many tokens one use of this action consumes.'
         product_variant:
             token_amount: 'Tokens granted'
     ui:
+        wallets: 'Token wallets'
+        adjust: 'Adjust balance'
+        adjustment:
+            credit: 'Add tokens'
+            debit: 'Remove tokens'
         token_pack: 'Token pack'
         token_products: 'Token packs'
         tariff: 'Token tariff'

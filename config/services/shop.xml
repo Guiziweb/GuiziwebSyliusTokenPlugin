@@ -13,6 +13,7 @@
         <service id="guiziweb_sylius_token.twig.runtime.token_balance" class="Guiziweb\SyliusTokenPlugin\Twig\TokenBalanceRuntime">
             <argument type="service" id="sylius.context.customer" />
             <argument type="service" id="guiziweb_sylius_token.wallet.consumer" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
             <tag name="twig.runtime" />
         </service>
 

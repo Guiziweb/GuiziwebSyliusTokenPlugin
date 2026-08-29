@@ -54,6 +54,7 @@ final readonly class WalletOperator implements WalletOperatorInterface
                     $credit->idempotencyKey,
                     $now,
                     $credit->order,
+                    $credit->reason,
                 ));
             },
         );
@@ -91,6 +92,7 @@ final readonly class WalletOperator implements WalletOperatorInterface
                         $debit->idempotencyKey,
                         $now,
                         $debit->order,
+                        $debit->reason,
                     ));
                 }
             },

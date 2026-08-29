@@ -13,5 +13,18 @@
             </argument>
             <tag name="form.type" />
         </service>
+
+        <service id="guiziweb_sylius_token.form.type.admin.wallet_adjustment" class="Guiziweb\SyliusTokenPlugin\Form\Type\Admin\WalletAdjustmentType">
+            <tag name="form.type" />
+        </service>
+
+        <service id="Guiziweb\SyliusTokenPlugin\Controller\Admin\WalletAdjustmentController" public="true">
+            <argument type="service" id="guiziweb_sylius_token.repository.wallet" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
+            <argument type="service" id="router" />
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
     </services>
 </container>

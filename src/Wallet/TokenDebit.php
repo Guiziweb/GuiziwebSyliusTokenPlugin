@@ -12,6 +12,7 @@ final readonly class TokenDebit
         public int $amount,
         public string $idempotencyKey,
         public ?OrderInterface $order = null,
+        public ?string $reason = null,
     ) {
     }
 }

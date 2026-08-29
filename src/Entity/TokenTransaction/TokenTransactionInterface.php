@@ -25,5 +25,7 @@ interface TokenTransactionInterface extends ResourceInterface
 
     public function getOrder(): ?OrderInterface;
 
+    public function getReason(): ?string;
+
     public function getCreatedAt(): \DateTimeImmutable;
 }
