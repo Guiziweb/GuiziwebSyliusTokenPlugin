@@ -15,5 +15,9 @@ interface TokenWalletInterface extends ResourceInterface
 
     public function setCustomer(?CustomerInterface $customer): void;
 
+    public function getBalance(): int;
+
+    public function setBalance(int $balance): void;
+
     public function getCreatedAt(): \DateTimeImmutable;
 }

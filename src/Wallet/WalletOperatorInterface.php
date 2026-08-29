@@ -18,4 +18,6 @@ interface WalletOperatorInterface
     public function debit(TokenWalletInterface $wallet, TokenDebit $debit): void;
 
     public function getBalance(TokenWalletInterface $wallet): int;
+
+    public function recalculateBalance(TokenWalletInterface $wallet): int;
 }

@@ -8,4 +8,5 @@ enum TokenTransactionType: string
 {
     case Credit = 'credit';
     case Debit = 'debit';
+    case Expiration = 'expiration';
 }

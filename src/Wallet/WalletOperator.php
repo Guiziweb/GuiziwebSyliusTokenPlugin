@@ -105,6 +105,11 @@ final readonly class WalletOperator implements WalletOperatorInterface
 
     public function getBalance(TokenWalletInterface $wallet): int
     {
+        return $wallet->getBalance();
+    }
+
+    public function recalculateBalance(TokenWalletInterface $wallet): int
+    {
         return $this->batchRepository->getBalance($wallet, $this->clock->now());
     }
 
@@ -129,7 +134,11 @@ final readonly class WalletOperator implements WalletOperatorInterface
                     return;
                 }
 
-                $operation($this->clock->now());
+                $now = $this->clock->now();
+                $operation($now);
+
+                $this->entityManager->flush();
+                $wallet->setBalance($this->batchRepository->getBalance($wallet, $now));
             },
         );
     }

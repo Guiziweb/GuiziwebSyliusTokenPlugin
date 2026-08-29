@@ -15,4 +15,11 @@ interface TokenBatchRepositoryInterface
     public function findAvailable(TokenWalletInterface $wallet, \DateTimeInterface $at): array;
 
     public function getBalance(TokenWalletInterface $wallet, \DateTimeInterface $at): int;
+
+    /**
+     * Batches whose expiration date has passed but that still hold tokens.
+     *
+     * @return array<int, TokenBatchInterface>
+     */
+    public function findExpired(\DateTimeInterface $at): array;
 }

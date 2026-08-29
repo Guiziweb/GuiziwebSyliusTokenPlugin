@@ -49,4 +49,20 @@ class TokenBatchRepository extends EntityRepository implements TokenBatchReposit
             ->setParameter('at', $at)
         ;
     }
+
+    public function findExpired(\DateTimeInterface $at): array
+    {
+        /** @var array<int, TokenBatchInterface> $batches */
+        $batches = $this->createQueryBuilder('o')
+            ->andWhere('o.remainingAmount > 0')
+            ->andWhere('o.expiresAt IS NOT NULL')
+            ->andWhere('o.expiresAt <= :at')
+            ->setParameter('at', $at)
+            ->orderBy('o.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $batches;
+    }
 }

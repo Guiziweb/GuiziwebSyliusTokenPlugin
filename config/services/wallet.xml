@@ -41,5 +41,23 @@
             <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
         </service>
         <service id="Guiziweb\SyliusTokenPlugin\Wallet\TokenConsumerInterface" alias="guiziweb_sylius_token.wallet.consumer" />
+
+        <service id="guiziweb_sylius_token.wallet.expirer" class="Guiziweb\SyliusTokenPlugin\Wallet\TokenExpirer">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="guiziweb_sylius_token.repository.batch" />
+            <argument type="service" id="clock" />
+        </service>
+        <service id="Guiziweb\SyliusTokenPlugin\Wallet\TokenExpirerInterface" alias="guiziweb_sylius_token.wallet.expirer" />
+
+        <service id="guiziweb_sylius_token.command.expire_tokens" class="Guiziweb\SyliusTokenPlugin\Command\ExpireTokensCommand">
+            <argument type="service" id="guiziweb_sylius_token.wallet.expirer" />
+            <tag name="console.command" />
+        </service>
+
+        <service id="guiziweb_sylius_token.command.check_balances" class="Guiziweb\SyliusTokenPlugin\Command\CheckBalancesCommand">
+            <argument type="service" id="guiziweb_sylius_token.repository.wallet" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
+            <tag name="console.command" />
+        </service>
     </services>
 </container>

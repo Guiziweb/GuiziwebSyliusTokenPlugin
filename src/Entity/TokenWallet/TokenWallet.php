@@ -20,6 +20,9 @@ class TokenWallet implements TokenWalletInterface
     #[ORM\JoinColumn(name: 'customer_id', nullable: false, unique: true, onDelete: 'CASCADE')]
     protected ?CustomerInterface $customer = null;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    protected int $balance = 0;
+
     #[ORM\Column(name: 'created_at', type: 'datetime_immutable')]
     protected \DateTimeImmutable $createdAt;
 
@@ -41,6 +44,16 @@ class TokenWallet implements TokenWalletInterface
     public function setCustomer(?CustomerInterface $customer): void
     {
         $this->customer = $customer;
+    }
+
+    public function getBalance(): int
+    {
+        return $this->balance;
+    }
+
+    public function setBalance(int $balance): void
+    {
+        $this->balance = $balance;
     }
 
     public function getCreatedAt(): \DateTimeImmutable

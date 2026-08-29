@@ -13,7 +13,6 @@ final class TokenBalanceExtension extends AbstractExtension
     {
         return [
             new TwigFunction('guiziweb_token_balance', [TokenBalanceRuntime::class, 'getBalance']),
-            new TwigFunction('guiziweb_wallet_balance', [TokenBalanceRuntime::class, 'getWalletBalance']),
         ];
     }
 }

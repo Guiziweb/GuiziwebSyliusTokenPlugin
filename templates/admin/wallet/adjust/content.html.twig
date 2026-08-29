@@ -1,0 +1,29 @@
+{% set wallet = hookable_metadata.context.wallet %}
+{% set balance = hookable_metadata.context.balance %}
+{% set form = hookable_metadata.context.form %}
+
+{% form_theme form '@SyliusAdmin/shared/form_theme.html.twig' %}
+
+<div class="container-xl">
+    <div class="page-header mb-3">
+        <h1 class="page-title">{{ 'guiziweb_sylius_token.ui.adjust'|trans }}</h1>
+        <div class="text-muted">
+            {{ wallet.customer.email ?? '' }} — {{ 'guiziweb_sylius_token.ui.balance'|trans }}: <strong>{{ balance }}</strong>
+        </div>
+    </div>
+
+    <div class="card">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': form.vars.id}}) }}
+            <div class="card-body">
+                {{ form_errors(form) }}
+                {{ form_row(form.direction) }}
+                {{ form_row(form.amount) }}
+                {{ form_row(form.reason) }}
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <button type="submit" class="btn btn-primary">{{ 'sylius.ui.save_changes'|trans }}</button>
+                <a href="{{ path('guiziweb_sylius_token_admin_wallet_index') }}" class="btn btn-link">{{ 'sylius.ui.cancel'|trans }}</a>
+            </div>
+        {{ form_end(form, {render_rest: false}) }}
+    </div>
+</div>
