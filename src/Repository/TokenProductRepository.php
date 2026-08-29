@@ -32,7 +32,7 @@ final readonly class TokenProductRepository
         }
 
         $queryBuilder = $manager->createQueryBuilder()
-            ->select('o')
+            ->select('o', 'product', 'translation')
             ->from($this->productVariantClass, 'o')
             ->innerJoin('o.product', 'product')
             ->leftJoin('product.translations', 'translation', 'WITH', 'translation.locale = :localeCode')

@@ -39,7 +39,7 @@ final class WalletAdjustmentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var array{direction: string, amount: int, reason: string} $data */
+            /** @var array{direction: string, amount: int, reason: string, operationId: string} $data */
             $data = $form->getData();
             $this->adjust($wallet, $data);
 
@@ -53,10 +53,10 @@ final class WalletAdjustmentController extends AbstractController
         ]);
     }
 
-    /** @param array{direction: string, amount: int, reason: string} $data */
+    /** @param array{direction: string, amount: int, reason: string, operationId: string} $data */
     private function adjust(TokenWalletInterface $wallet, array $data): void
     {
-        $key = sprintf('admin-%s-%s', (string) $wallet->getId(), uniqid('', true));
+        $key = sprintf('admin-%s-%s', (string) $wallet->getId(), $data['operationId']);
 
         if ('credit' === $data['direction']) {
             $this->walletOperator->credit($wallet, new TokenCredit(
@@ -79,7 +79,7 @@ final class WalletAdjustmentController extends AbstractController
             ));
 
             $this->addFlash('success', 'guiziweb_sylius_token.flash.debited');
-        } catch (InsufficientTokenBalanceException $exception) {
+        } catch (InsufficientTokenBalanceException) {
             $this->addFlash('error', 'guiziweb_sylius_token.flash.insufficient_balance');
         }
     }

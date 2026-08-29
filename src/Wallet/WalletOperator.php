@@ -103,6 +103,37 @@ final readonly class WalletOperator implements WalletOperatorInterface
         }
     }
 
+    public function expireBatch(TokenBatchInterface $batch): int
+    {
+        $expired = 0;
+
+        $this->record(
+            $batch->getWallet(),
+            sprintf('expiration-batch-%s', (string) $batch->getId()),
+            TokenTransactionType::Expiration,
+            function (\DateTimeImmutable $now) use ($batch, &$expired): void {
+                $amount = $batch->getRemainingAmount();
+
+                if ($amount <= 0) {
+                    return;
+                }
+
+                $batch->deduct($amount);
+                $expired = $amount;
+
+                $this->entityManager->persist(new TokenTransaction(
+                    $batch,
+                    -$amount,
+                    TokenTransactionType::Expiration,
+                    sprintf('expiration-batch-%s', (string) $batch->getId()),
+                    $now,
+                ));
+            },
+        );
+
+        return $expired;
+    }
+
     public function getBalance(TokenWalletInterface $wallet): int
     {
         return $wallet->getBalance();

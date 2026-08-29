@@ -19,11 +19,12 @@
                 {{ form_row(form.direction) }}
                 {{ form_row(form.amount) }}
                 {{ form_row(form.reason) }}
+                {{ form_widget(form.operationId) }}
             </div>
             <div class="card-footer d-flex gap-2">
                 <button type="submit" class="btn btn-primary">{{ 'sylius.ui.save_changes'|trans }}</button>
                 <a href="{{ path('guiziweb_sylius_token_admin_wallet_index') }}" class="btn btn-link">{{ 'sylius.ui.cancel'|trans }}</a>
             </div>
-        {{ form_end(form, {render_rest: false}) }}
+        {{ form_end(form) }}
     </div>
 </div>

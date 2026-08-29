@@ -6,6 +6,7 @@ namespace Guiziweb\SyliusTokenPlugin\Form\Type\Admin;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,6 +35,10 @@ final class WalletAdjustmentType extends AbstractType
             ->add('reason', TextType::class, [
                 'label' => 'guiziweb_sylius_token.form.adjustment.reason',
                 'help' => 'guiziweb_sylius_token.form.adjustment.reason_help',
+                'constraints' => [new NotBlank()],
+            ])
+            ->add('operationId', HiddenType::class, [
+                'data' => bin2hex(random_bytes(16)),
                 'constraints' => [new NotBlank()],
             ])
         ;

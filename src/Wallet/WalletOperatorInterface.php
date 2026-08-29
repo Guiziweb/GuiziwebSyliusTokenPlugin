@@ -20,4 +20,11 @@ interface WalletOperatorInterface
     public function getBalance(TokenWalletInterface $wallet): int;
 
     public function recalculateBalance(TokenWalletInterface $wallet): int;
+
+    /**
+     * Empties an expired batch and records the movement.
+     *
+     * @return int the number of tokens that were expired
+     */
+    public function expireBatch(TokenBatchInterface $batch): int;
 }

@@ -33,7 +33,13 @@ final readonly class TokenConsumer implements TokenConsumerInterface
 
     public function canConsume(CustomerInterface $customer, TokenTariffInterface $tariff, int $quantity = 1): bool
     {
-        return $this->getBalance($customer) >= $this->cost($tariff, $quantity);
+        try {
+            $cost = $this->cost($tariff, $quantity);
+        } catch (TariffNotAvailableException|\InvalidArgumentException) {
+            return false;
+        }
+
+        return $this->getBalance($customer) >= $cost;
     }
 
     public function getBalance(CustomerInterface $customer): int

@@ -24,15 +24,14 @@ final readonly class CustomerWalletRuntime implements RuntimeExtensionInterface
         return $this->walletRepository->findOneBy(['customer' => $customer]);
     }
 
-    /** @return array{credited: int, spent: int, movements: int} */
+    /** @return array{credited: int, spent: int} */
     public function getStatistics(CustomerInterface $customer): array
     {
-        /** @var array{credited: ?string, spent: ?string, movements: ?string} $row */
+        /** @var array{credited: ?string, spent: ?string} $row */
         $row = $this->transactionRepository->createByCustomerQueryBuilder($customer)
             ->select(
                 'COALESCE(SUM(CASE WHEN o.amount > 0 THEN o.amount ELSE 0 END), 0) AS credited',
                 'COALESCE(SUM(CASE WHEN o.amount < 0 THEN -o.amount ELSE 0 END), 0) AS spent',
-                'COUNT(o.id) AS movements',
             )
             ->getQuery()
             ->getSingleResult()
@@ -41,7 +40,6 @@ final readonly class CustomerWalletRuntime implements RuntimeExtensionInterface
         return [
             'credited' => (int) $row['credited'],
             'spent' => (int) $row['spent'],
-            'movements' => (int) $row['movements'],
         ];
     }
 }

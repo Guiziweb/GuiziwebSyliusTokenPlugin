@@ -43,8 +43,8 @@
         <service id="Guiziweb\SyliusTokenPlugin\Wallet\TokenConsumerInterface" alias="guiziweb_sylius_token.wallet.consumer" />
 
         <service id="guiziweb_sylius_token.wallet.expirer" class="Guiziweb\SyliusTokenPlugin\Wallet\TokenExpirer">
-            <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="guiziweb_sylius_token.repository.batch" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
             <argument type="service" id="clock" />
         </service>
         <service id="Guiziweb\SyliusTokenPlugin\Wallet\TokenExpirerInterface" alias="guiziweb_sylius_token.wallet.expirer" />
