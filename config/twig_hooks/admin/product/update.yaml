@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.product.update.content.form.sections.general':
+            token_amount:
+                template: '@GuiziwebSyliusTokenPlugin/admin/product/form/sections/general/token_amount.html.twig'
+                priority: -100

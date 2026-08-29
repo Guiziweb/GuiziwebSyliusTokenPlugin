@@ -1,13 +1,9 @@
-# Delete these routes and define your own shop routes here
-
-guiziweb_sylius_token_static_welcome:
-    path: /static-welcome/{name}
+guiziweb_sylius_token_shop_account_tokens_index:
+    path: /account/tokens
+    methods: [GET]
     defaults:
-        _controller: Guiziweb\SyliusTokenPlugin\Controller\GreetingController::staticallyGreetAction
-        name: ~
-
-guiziweb_sylius_token_dynamic_welcome:
-    path: /dynamic-welcome/{name}
-    defaults:
-        _controller: Guiziweb\SyliusTokenPlugin\Controller\GreetingController::dynamicallyGreetAction
-        name: ~
+        _controller: guiziweb_sylius_token.controller.transaction::indexAction
+        _sylius:
+            section: shop_account
+            template: "@GuiziwebSyliusTokenPlugin/shop/account/tokens/index.html.twig"
+            grid: guiziweb_sylius_token_shop_account_transaction

@@ -1,1 +1,9 @@
-# Define your own admin routes here
+guiziweb_sylius_token_admin_token_product_index:
+    path: /token-products
+    methods: [GET]
+    defaults:
+        _controller: sylius.controller.product_variant::indexAction
+        _sylius:
+            section: admin
+            template: "@GuiziwebSyliusTokenPlugin/admin/token_product/index.html.twig"
+            grid: guiziweb_sylius_token_admin_token_product

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="guiziweb_sylius_token.remover.payment.order" class="Guiziweb\SyliusTokenPlugin\Payment\Remover\OrderPaymentsRemover"
+                 decorates="sylius.remover.payment.order">
+            <argument type="service" id="guiziweb_sylius_token.remover.payment.order.inner" />
+            <argument type="service" id="guiziweb_sylius_token.order.kind_resolver" />
+        </service>
+
+        <service id="guiziweb_sylius_token.checker.order_payment_method_selection_requirement" class="Guiziweb\SyliusTokenPlugin\Checker\OrderPaymentMethodSelectionRequirementChecker"
+                 decorates="sylius.checker.order_payment_method_selection_requirement">
+            <argument type="service" id="guiziweb_sylius_token.checker.order_payment_method_selection_requirement.inner" />
+            <argument type="service" id="guiziweb_sylius_token.order.kind_resolver" />
+        </service>
+
+        <service id="guiziweb_sylius_token.validator.order_payable_with_tokens" class="Guiziweb\SyliusTokenPlugin\Validator\Constraints\OrderPayableWithTokensValidator">
+            <argument type="service" id="guiziweb_sylius_token.order.kind_resolver" />
+            <argument type="service" id="guiziweb_sylius_token.payment.order_token_price_calculator" />
+            <argument type="service" id="guiziweb_sylius_token.repository.wallet" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
+            <tag name="validator.constraint_validator" alias="guiziweb_sylius_token_order_payable_with_tokens_validator" />
+        </service>
+    </services>
+</container>

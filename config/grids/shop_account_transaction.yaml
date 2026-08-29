@@ -1,0 +1,37 @@
+sylius_grid:
+    grids:
+        guiziweb_sylius_token_shop_account_transaction:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: "%guiziweb_sylius_token.model.transaction.class%"
+                    repository:
+                        method: createByCustomerQueryBuilder
+                        arguments:
+                            - "expr:service('sylius.context.customer').getCustomer()"
+            sorting:
+                createdAt: desc
+            limits: [10, 25, 50]
+            fields:
+                createdAt:
+                    type: datetime
+                    label: sylius.ui.date
+                    sortable: ~
+                    options:
+                        format: Y-m-d H:i
+                type:
+                    type: twig
+                    label: guiziweb_sylius_token.ui.transaction.type
+                    options:
+                        template: "@GuiziwebSyliusTokenPlugin/shop/account/tokens/grid/field/type.html.twig"
+                amount:
+                    type: twig
+                    label: guiziweb_sylius_token.ui.transaction.amount
+                    sortable: ~
+                    options:
+                        template: "@GuiziwebSyliusTokenPlugin/shop/account/tokens/grid/field/amount.html.twig"
+                order:
+                    type: twig
+                    label: sylius.ui.order
+                    options:
+                        template: "@GuiziwebSyliusTokenPlugin/shop/account/tokens/grid/field/order.html.twig"

@@ -1,0 +1,9 @@
+<div class="card border-0 bg-body-tertiary mb-4">
+    <div class="card-body d-flex align-items-center gap-3">
+        {{ ux_icon('tabler:coins', { class: 'icon icon-lg' }) }}
+        <div>
+            <div class="text-muted small">{{ 'guiziweb_sylius_token.ui.balance'|trans }}</div>
+            <div class="h2 mb-0">{{ guiziweb_token_balance() }}</div>
+        </div>
+    </div>
+</div>

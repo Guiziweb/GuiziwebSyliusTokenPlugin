@@ -1,0 +1,6 @@
+sylius_resource:
+    resources:
+        guiziweb_sylius_token.wallet:
+            driver: doctrine/orm
+            classes:
+                model: Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWallet

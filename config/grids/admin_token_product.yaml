@@ -1,0 +1,51 @@
+sylius_grid:
+    grids:
+        guiziweb_sylius_token_admin_token_product:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: "%sylius.model.product_variant.class%"
+                    repository:
+                        method: ["expr:service('guiziweb_sylius_token.repository.token_product')", 'createPackListQueryBuilder']
+                        arguments: ["expr:service('sylius.context.locale').getLocaleCode()"]
+            sorting:
+                tokenAmount: desc
+            limits: [10, 25, 50]
+            fields:
+                name:
+                    type: twig
+                    label: sylius.ui.name
+                    path: .
+                    options:
+                        template: "@GuiziwebSyliusTokenPlugin/admin/token_product/grid/field/name.html.twig"
+                tokenAmount:
+                    type: string
+                    label: guiziweb_sylius_token.form.product_variant.token_amount
+                    path: tokenAmount
+                    sortable: ~
+                code:
+                    type: string
+                    label: sylius.ui.code
+                    sortable: ~
+            filters:
+                code:
+                    type: string
+                    label: sylius.ui.code
+            actions:
+                main:
+                    create_pack:
+                        type: default
+                        label: guiziweb_sylius_token.ui.create_pack
+                        options:
+                            link:
+                                route: sylius_admin_product_create_simple
+                                icon: 'tabler:plus'
+                item:
+                    update:
+                        type: update
+                        options:
+                            link:
+                                route: sylius_admin_product_variant_update
+                                parameters:
+                                    productId: resource.product.id
+                                    id: resource.id

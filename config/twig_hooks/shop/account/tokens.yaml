@@ -1,0 +1,27 @@
+sylius_twig_hooks:
+    hooks:
+        'guiziweb_sylius_token.shop.account.tokens.index.content':
+            menu:
+                template: '@SyliusShop/account/common/content/menu.html.twig'
+                priority: 100
+            main:
+                template: '@SyliusShop/account/common/content/main.html.twig'
+                priority: 0
+
+        'guiziweb_sylius_token.shop.account.tokens.index.content.main':
+            balance:
+                template: '@GuiziwebSyliusTokenPlugin/shop/account/tokens/index/content/main/balance.html.twig'
+                priority: 100
+            grid:
+                template: '@SyliusShop/shared/grid.html.twig'
+                priority: 0
+
+        'guiziweb_sylius_token.shop.account.tokens.index.content.main.header':
+            title:
+                template: '@GuiziwebSyliusTokenPlugin/shop/account/tokens/index/content/main/header/title.html.twig'
+                priority: 100
+
+        'sylius_shop.base.header.content.security.logged_in_user.desktop':
+            token_balance:
+                template: '@GuiziwebSyliusTokenPlugin/shop/shared/layout/base/header/content/security/logged_in_user/desktop/token_balance.html.twig'
+                priority: 150

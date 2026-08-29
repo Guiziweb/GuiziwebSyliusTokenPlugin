@@ -1,0 +1,5 @@
+sylius_fixtures:
+    suites:
+        guiziweb_token:
+            fixtures:
+                guiziweb_token: ~

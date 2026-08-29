@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="guiziweb_sylius_token.wallet.order_token_creditor" class="Guiziweb\SyliusTokenPlugin\Wallet\OrderTokenCreditor">
+            <argument type="service" id="guiziweb_sylius_token.wallet.provider" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
+        </service>
+        <service id="Guiziweb\SyliusTokenPlugin\Wallet\OrderTokenCreditorInterface" alias="guiziweb_sylius_token.wallet.order_token_creditor" />
+
+        <service id="guiziweb_sylius_token.listener.workflow.payment.credit_tokens" class="Guiziweb\SyliusTokenPlugin\EventListener\Workflow\Payment\CreditTokensListener">
+            <argument type="service" id="guiziweb_sylius_token.wallet.order_token_creditor" />
+            <tag name="kernel.event_listener" event="workflow.sylius_payment.completed.complete" />
+        </service>
+
+        <service id="guiziweb_sylius_token.form.extension.product_variant_type" class="Guiziweb\SyliusTokenPlugin\Form\Extension\ProductVariant\ProductVariantTypeExtension">
+            <tag name="form.type_extension" />
+        </service>
+    </services>
+</container>

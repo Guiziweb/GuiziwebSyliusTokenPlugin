@@ -1,5 +1,9 @@
 guiziweb_sylius_token_admin:
     resource: "@GuiziwebSyliusTokenPlugin/config/routes/admin.yaml"
+    prefix: /admin
 
 guiziweb_sylius_token_shop:
     resource: "@GuiziwebSyliusTokenPlugin/config/routes/shop.yaml"
+    prefix: /{_locale}
+    requirements:
+        _locale: ^[A-Za-z]{2,4}(_([A-Za-z]{4}|[0-9]{3}))?(_([A-Za-z]{2}|[0-9]{3}))?$

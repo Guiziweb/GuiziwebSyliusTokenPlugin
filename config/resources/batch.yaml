@@ -1,0 +1,7 @@
+sylius_resource:
+    resources:
+        guiziweb_sylius_token.batch:
+            driver: doctrine/orm
+            classes:
+                model: Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatch
+                repository: Guiziweb\SyliusTokenPlugin\Repository\TokenBatchRepository

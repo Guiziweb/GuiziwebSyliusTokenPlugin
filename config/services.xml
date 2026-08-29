@@ -10,7 +10,6 @@
     </imports>
 
     <services>
-        <service id="Guiziweb\SyliusTokenPlugin\Controller\GreetingController" autowire="true" autoconfigure="true" public="true" />
         <!-- Put your services here -->
     </services>
 </container>

@@ -1,0 +1,6 @@
+{% extends '@SyliusShop/account/common/index.html.twig' %}
+
+{% set prefixes = ['guiziweb_sylius_token.shop.account.tokens'] %}
+{% set attrs = { resources } %}
+
+{% block title %}{{ 'guiziweb_sylius_token.ui.my_tokens'|trans }} | {{ parent() }}{% endblock %}

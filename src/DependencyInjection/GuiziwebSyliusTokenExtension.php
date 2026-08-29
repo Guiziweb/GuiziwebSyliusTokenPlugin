@@ -18,6 +18,11 @@ final class GuiziwebSyliusTokenExtension extends AbstractResourceExtension imple
     /** @psalm-suppress UnusedVariable */
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
+
+        $container->setParameter('guiziweb_sylius_token.expiration.enabled', $config['expiration']['enabled']);
+        $container->setParameter('guiziweb_sylius_token.expiration.period', $config['expiration']['period']);
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
 
         $loader->load('services.xml');
@@ -26,6 +31,19 @@ final class GuiziwebSyliusTokenExtension extends AbstractResourceExtension imple
     public function prepend(ContainerBuilder $container): void
     {
         $this->prependDoctrineMigrations($container);
+
+        $container->prependExtensionConfig('doctrine', [
+            'orm' => [
+                'mappings' => [
+                    'GuiziwebSyliusTokenPlugin' => [
+                        'is_bundle' => false,
+                        'type' => 'attribute',
+                        'dir' => \dirname(__DIR__) . '/Entity',
+                        'prefix' => 'Guiziweb\SyliusTokenPlugin\Entity',
+                    ],
+                ],
+            ],
+        ]);
     }
 
     protected function getMigrationsNamespace(): string

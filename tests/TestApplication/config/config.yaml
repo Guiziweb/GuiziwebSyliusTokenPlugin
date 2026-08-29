@@ -1,6 +1,7 @@
 imports:
     - { resource: "@GuiziwebSyliusTokenPlugin/config/config.yaml" }
     - { resource: "services_test.php" }
+    - { resource: "packages/_sylius.yaml" }
 
 twig:
     paths:

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="Guiziweb\SyliusTokenPlugin\Repository\TokenBatchRepositoryInterface" alias="guiziweb_sylius_token.repository.batch" />
+        <service id="Guiziweb\SyliusTokenPlugin\Repository\TokenTransactionRepositoryInterface" alias="guiziweb_sylius_token.repository.transaction" />
+
+        <service id="guiziweb_sylius_token.wallet.batch_allocator" class="Guiziweb\SyliusTokenPlugin\Wallet\BatchAllocator" />
+        <service id="Guiziweb\SyliusTokenPlugin\Wallet\BatchAllocatorInterface" alias="guiziweb_sylius_token.wallet.batch_allocator" />
+
+        <service id="guiziweb_sylius_token.wallet.expiration_date_resolver" class="Guiziweb\SyliusTokenPlugin\Wallet\ExpirationDateResolver">
+            <argument>%guiziweb_sylius_token.expiration.enabled%</argument>
+            <argument>%guiziweb_sylius_token.expiration.period%</argument>
+        </service>
+        <service id="Guiziweb\SyliusTokenPlugin\Wallet\ExpirationDateResolverInterface" alias="guiziweb_sylius_token.wallet.expiration_date_resolver" />
+
+        <service id="guiziweb_sylius_token.wallet.provider" class="Guiziweb\SyliusTokenPlugin\Wallet\WalletProvider">
+            <argument type="service" id="guiziweb_sylius_token.repository.wallet" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="clock" />
+        </service>
+        <service id="Guiziweb\SyliusTokenPlugin\Wallet\WalletProviderInterface" alias="guiziweb_sylius_token.wallet.provider" />
+
+        <service id="guiziweb_sylius_token.wallet.operator" class="Guiziweb\SyliusTokenPlugin\Wallet\WalletOperator">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="guiziweb_sylius_token.repository.batch" />
+            <argument type="service" id="guiziweb_sylius_token.repository.transaction" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.batch_allocator" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.expiration_date_resolver" />
+            <argument type="service" id="clock" />
+        </service>
+        <service id="Guiziweb\SyliusTokenPlugin\Wallet\WalletOperatorInterface" alias="guiziweb_sylius_token.wallet.operator" />
+
+        <service id="guiziweb_sylius_token.wallet.consumer" class="Guiziweb\SyliusTokenPlugin\Wallet\TokenConsumer">
+            <argument type="service" id="guiziweb_sylius_token.repository.wallet" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.provider" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
+        </service>
+        <service id="Guiziweb\SyliusTokenPlugin\Wallet\TokenConsumerInterface" alias="guiziweb_sylius_token.wallet.consumer" />
+    </services>
+</container>

@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
     <services>
-        <defaults public="true" />
-        <!-- Put your Behat services here -->
-
-        <service id="guiziweb_sylius_token.context.ui.shop.welcome" class="Tests\Guiziweb\SyliusTokenPlugin\Behat\Context\Ui\Shop\WelcomeContext">
-            <argument type="service" id="guiziweb_sylius_token.page.shop.static_welcome" />
-            <argument type="service" id="guiziweb_sylius_token.page.shop.dynamic_welcome" />
+        <service id="guiziweb_sylius_token.behat.context.setup.token" class="Tests\Guiziweb\SyliusTokenPlugin\Behat\Context\Setup\TokenContext" public="true">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.provider" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
+            <argument type="service" id="sylius.behat.shared_storage" />
+            <argument type="service" id="sylius.fixture.example_factory.payment_method" />
+            <argument type="service" id="sylius.repository.payment_method" />
+            <argument type="service" id="sylius_abstraction.state_machine" />
         </service>
 
-        <service id="guiziweb_sylius_token.page.shop.static_welcome" class="Tests\Guiziweb\SyliusTokenPlugin\Behat\Page\Shop\StaticWelcomePage" parent="sylius.behat.symfony_page" public="false" />
-        <service id="guiziweb_sylius_token.page.shop.dynamic_welcome" class="Tests\Guiziweb\SyliusTokenPlugin\Behat\Page\Shop\DynamicWelcomePage" parent="sylius.behat.symfony_page" public="false" />
+        <service id="guiziweb_sylius_token.behat.context.ui.shop.token_balance" class="Tests\Guiziweb\SyliusTokenPlugin\Behat\Context\Ui\Shop\TokenBalanceContext" public="true">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="sylius.context.customer" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.consumer" />
+            <argument type="service" id="sylius.behat.page.shop.checkout.select_payment" />
+        </service>
     </services>
 </container>

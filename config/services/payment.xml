@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container
+        xmlns="http://symfony.com/schema/dic/services"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <services>
+        <service id="guiziweb_sylius_token.form.type.gateway_configuration" class="Guiziweb\SyliusTokenPlugin\Form\Type\TokenWalletGatewayConfigurationType">
+            <tag name="sylius.gateway_configuration_type" type="token_wallet" label="guiziweb_sylius_token.gateway_factory.token_wallet" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="guiziweb_sylius_token.order.kind_resolver" class="Guiziweb\SyliusTokenPlugin\Order\OrderKindResolver" />
+        <service id="Guiziweb\SyliusTokenPlugin\Order\OrderKindResolverInterface" alias="guiziweb_sylius_token.order.kind_resolver" />
+
+        <service id="guiziweb_sylius_token.payment.order_token_price_calculator" class="Guiziweb\SyliusTokenPlugin\Payment\OrderTokenPriceCalculator" />
+        <service id="Guiziweb\SyliusTokenPlugin\Payment\OrderTokenPriceCalculatorInterface" alias="guiziweb_sylius_token.payment.order_token_price_calculator" />
+
+        <service id="guiziweb_sylius_token.command_provider.payment_request.token_wallet" class="Sylius\Bundle\PaymentBundle\CommandProvider\ActionsCommandProvider">
+            <argument type="tagged_locator" tag="guiziweb_sylius_token.command_provider.payment_request.token_wallet" index-by="action" />
+            <tag name="sylius.payment_request.command_provider" gateway-factory="token_wallet" />
+        </service>
+
+        <service id="guiziweb_sylius_token.command_provider.payment_request.token_wallet.capture" class="Guiziweb\SyliusTokenPlugin\Payment\CommandProvider\CaptureCommandProvider">
+            <tag name="guiziweb_sylius_token.command_provider.payment_request.token_wallet" action="capture" />
+        </service>
+
+        <service id="guiziweb_sylius_token.command_provider.payment_request.token_wallet.status" class="Guiziweb\SyliusTokenPlugin\Payment\CommandProvider\StatusCommandProvider">
+            <tag name="guiziweb_sylius_token.command_provider.payment_request.token_wallet" action="status" />
+        </service>
+
+        <service id="guiziweb_sylius_token.command_handler.payment_request.token_wallet.status" class="Guiziweb\SyliusTokenPlugin\Payment\CommandHandler\StatusHandler">
+            <argument type="service" id="sylius.provider.payment_request" />
+            <argument type="service" id="sylius_abstraction.state_machine" />
+            <tag name="messenger.message_handler" bus="sylius.payment_request.command_bus" />
+        </service>
+
+        <service id="guiziweb_sylius_token.provider.payment_request.http_response.token_wallet" class="Sylius\Bundle\PaymentBundle\Provider\ActionsHttpResponseProvider">
+            <argument type="tagged_locator" tag="guiziweb_sylius_token.provider.payment_request.http_response.token_wallet" index-by="action" />
+            <tag name="sylius.payment_request.provider.http_response" gateway-factory="token_wallet" />
+        </service>
+
+        <service id="guiziweb_sylius_token.provider.payment_request.http_response.token_wallet.status" class="Guiziweb\SyliusTokenPlugin\Payment\HttpResponseProvider\StatusHttpResponseProvider">
+            <argument type="service" id="sylius_shop.provider.order_pay.final_url" />
+            <tag name="guiziweb_sylius_token.provider.payment_request.http_response.token_wallet" action="status" />
+        </service>
+
+        <service id="guiziweb_sylius_token.command_handler.payment_request.token_wallet.capture" class="Guiziweb\SyliusTokenPlugin\Payment\CommandHandler\CaptureHandler">
+            <argument type="service" id="sylius.provider.payment_request" />
+            <argument type="service" id="guiziweb_sylius_token.payment.order_token_price_calculator" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.provider" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
+            <argument type="service" id="sylius_abstraction.state_machine" />
+            <tag name="messenger.message_handler" bus="sylius.payment_request.command_bus" />
+        </service>
+
+        <service id="guiziweb_sylius_token.resolver.payment_methods" class="Guiziweb\SyliusTokenPlugin\Payment\TokenWalletPaymentMethodsResolver"
+                 decorates="sylius.resolver.payment_methods.channel_based">
+            <argument type="service" id="guiziweb_sylius_token.resolver.payment_methods.inner" />
+            <argument type="service" id="guiziweb_sylius_token.order.kind_resolver" />
+            <argument type="service" id="guiziweb_sylius_token.payment.order_token_price_calculator" />
+            <argument type="service" id="guiziweb_sylius_token.repository.wallet" />
+            <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
+        </service>
+    </services>
+</container>

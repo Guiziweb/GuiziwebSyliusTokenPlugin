@@ -1,5 +1,6 @@
 /vendor/
 /var/
+/.playwright-mcp/
 /node_modules/
 /drivers/
 /composer.lock

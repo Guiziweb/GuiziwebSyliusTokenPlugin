@@ -1,0 +1,25 @@
+guiziweb_sylius_token:
+    form:
+        product_variant:
+            token_amount: 'Tokens granted'
+            token_price: 'Price in tokens'
+    ui:
+        token_products: 'Token packs'
+        create_pack: 'Create'
+        my_tokens: 'My tokens'
+        balance: 'Available tokens'
+        transaction:
+            type: 'Type'
+            amount: 'Tokens'
+            types:
+                credit: 'Credit'
+                debit: 'Debit'
+        product_variant:
+            token_amount: 'Tokens'
+            token_price: 'Token price'
+    gateway_factory:
+        token_wallet: 'Token wallet'
+    menu:
+        shop:
+            account:
+                tokens: 'My tokens'

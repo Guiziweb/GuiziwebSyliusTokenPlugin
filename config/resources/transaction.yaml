@@ -1,0 +1,7 @@
+sylius_resource:
+    resources:
+        guiziweb_sylius_token.transaction:
+            driver: doctrine/orm
+            classes:
+                model: Guiziweb\SyliusTokenPlugin\Entity\TokenTransaction\TokenTransaction
+                repository: Guiziweb\SyliusTokenPlugin\Repository\TokenTransactionRepository
