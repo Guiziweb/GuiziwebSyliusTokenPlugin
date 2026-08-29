@@ -37,4 +37,12 @@ class TokenTransactionRepository extends EntityRepository implements TokenTransa
             ->setParameter('customer', $customer)
         ;
     }
+
+    public function createByWalletQueryBuilder(TokenWalletInterface $wallet): QueryBuilder
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.wallet = :wallet')
+            ->setParameter('wallet', $wallet)
+        ;
+    }
 }

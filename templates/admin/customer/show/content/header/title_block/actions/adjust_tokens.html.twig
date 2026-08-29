@@ -1,0 +1,8 @@
+{% set wallet = guiziweb_customer_wallet(hookable_metadata.context.resource) %}
+
+{% if wallet is not null %}
+    <a class="dropdown-item" href="{{ path('guiziweb_sylius_token_admin_wallet_adjust', { id: wallet.id }) }}">
+        {{ ux_icon('tabler:coins', {'class': 'icon dropdown-item-icon'}) }}
+        {{ 'guiziweb_sylius_token.ui.adjust'|trans }}
+    </a>
+{% endif %}

@@ -1,0 +1,4 @@
+{% set label = ('guiziweb_sylius_token.ui.transaction.types.' ~ data.value)|trans %}
+{% set badge = { 'credit': 'bg-success', 'expiration': 'bg-warning' }[data.value]|default('bg-secondary') %}
+
+<span class="badge {{ badge }}">{{ label }}</span>

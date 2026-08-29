@@ -1,17 +1,17 @@
 sylius_grid:
     grids:
-        guiziweb_sylius_token_shop_account_transaction:
+        guiziweb_sylius_token_admin_wallet_history:
             driver:
                 name: doctrine/orm
                 options:
                     class: "%guiziweb_sylius_token.model.transaction.class%"
                     repository:
-                        method: createByCustomerQueryBuilder
+                        method: createByWalletQueryBuilder
                         arguments:
-                            - "expr:service('sylius.context.customer').getCustomer()"
+                            - "expr:service('guiziweb_sylius_token.provider.current_wallet').getWallet()"
             sorting:
                 createdAt: desc
-            limits: [10, 25, 50]
+            limits: [25, 50, 100]
             fields:
                 createdAt:
                     type: datetime
@@ -22,6 +22,7 @@ sylius_grid:
                 type:
                     type: twig
                     label: guiziweb_sylius_token.ui.transaction.type
+                    sortable: ~
                     options:
                         template: "@GuiziwebSyliusTokenPlugin/shared/grid/field/token_type.html.twig"
                 amount:
@@ -30,8 +31,21 @@ sylius_grid:
                     sortable: ~
                     options:
                         template: "@GuiziwebSyliusTokenPlugin/shared/grid/field/token_amount.html.twig"
-                order:
+                reason:
                     type: twig
-                    label: sylius.ui.order
+                    label: guiziweb_sylius_token.form.adjustment.reason
+                    path: .
                     options:
-                        template: "@GuiziwebSyliusTokenPlugin/shop/account/tokens/grid/field/order.html.twig"
+                        template: "@GuiziwebSyliusTokenPlugin/admin/wallet/grid/field/context.html.twig"
+            filters:
+                type:
+                    type: select
+                    label: guiziweb_sylius_token.ui.transaction.type
+                    form_options:
+                        choices:
+                            guiziweb_sylius_token.ui.transaction.types.credit: credit
+                            guiziweb_sylius_token.ui.transaction.types.debit: debit
+                            guiziweb_sylius_token.ui.transaction.types.expiration: expiration
+                reason:
+                    type: string
+                    label: guiziweb_sylius_token.form.adjustment.reason

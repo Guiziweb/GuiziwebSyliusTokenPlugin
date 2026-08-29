@@ -19,5 +19,11 @@
         <service id="guiziweb_sylius_token.twig.extension.token_balance" class="Guiziweb\SyliusTokenPlugin\Twig\TokenBalanceExtension">
             <tag name="twig.extension" />
         </service>
+
+        <service id="guiziweb_sylius_token.twig.runtime.customer_wallet" class="Guiziweb\SyliusTokenPlugin\Twig\CustomerWalletRuntime">
+            <argument type="service" id="guiziweb_sylius_token.repository.wallet" />
+            <argument type="service" id="guiziweb_sylius_token.repository.transaction" />
+            <tag name="twig.runtime" />
+        </service>
     </services>
 </container>

@@ -1,0 +1,11 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.customer.show.content.header.title_block.actions':
+            guiziweb_adjust_tokens:
+                template: '@GuiziwebSyliusTokenPlugin/admin/customer/show/content/header/title_block/actions/adjust_tokens.html.twig'
+                priority: 150
+
+        'sylius_admin.customer.show.content.sections':
+            guiziweb_tokens:
+                template: '@GuiziwebSyliusTokenPlugin/admin/customer/show/content/sections/tokens.html.twig'
+                priority: -100

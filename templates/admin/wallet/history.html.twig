@@ -1,0 +1,10 @@
+{% extends '@SyliusAdmin/shared/layout/base.html.twig' %}
+
+{% set prefixes = ['guiziweb_sylius_token.admin.wallet_history', 'sylius_admin.common'] %}
+{% set header = 'guiziweb_sylius_token.ui.history' %}
+
+{% block title %}{{ header|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+    {% hook 'index' with { _prefixes: prefixes, metadata, resources, header } %}
+{% endblock %}

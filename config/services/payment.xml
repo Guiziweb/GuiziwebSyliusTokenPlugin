@@ -26,5 +26,10 @@
                 <argument type="service" id="service_container" />
             </call>
         </service>
+
+        <service id="guiziweb_sylius_token.provider.current_wallet" class="Guiziweb\SyliusTokenPlugin\Provider\CurrentWalletProvider" public="true">
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="guiziweb_sylius_token.repository.wallet" />
+        </service>
     </services>
 </container>

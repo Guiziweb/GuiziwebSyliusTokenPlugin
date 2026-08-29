@@ -14,4 +14,6 @@ interface TokenTransactionRepositoryInterface
     public function hasIdempotencyKey(TokenWalletInterface $wallet, string $idempotencyKey, TokenTransactionType $type): bool;
 
     public function createByCustomerQueryBuilder(CustomerInterface $customer): QueryBuilder;
+
+    public function createByWalletQueryBuilder(TokenWalletInterface $wallet): QueryBuilder;
 }

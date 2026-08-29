@@ -37,3 +37,13 @@ guiziweb_sylius_token_admin_wallet_adjust:
     methods: [GET, POST]
     defaults:
         _controller: Guiziweb\SyliusTokenPlugin\Controller\Admin\WalletAdjustmentController
+
+guiziweb_sylius_token_admin_wallet_history:
+    path: /token-wallets/{id}/history
+    methods: [GET]
+    defaults:
+        _controller: guiziweb_sylius_token.controller.transaction::indexAction
+        _sylius:
+            section: admin
+            template: "@GuiziwebSyliusTokenPlugin/admin/wallet/history.html.twig"
+            grid: guiziweb_sylius_token_admin_wallet_history

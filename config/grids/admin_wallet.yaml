@@ -25,6 +25,12 @@ sylius_grid:
                     sortable: ~
                     options:
                         format: Y-m-d H:i
+            filters:
+                customer:
+                    type: string
+                    label: sylius.ui.customer
+                    options:
+                        fields: [customer.email, customer.firstName, customer.lastName]
             actions:
                 item:
                     adjust:

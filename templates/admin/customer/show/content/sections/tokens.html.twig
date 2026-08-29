@@ -1,0 +1,49 @@
+{% set customer = hookable_metadata.context.resource %}
+{% set wallet = guiziweb_customer_wallet(customer) %}
+
+<div class="mb-2">
+    <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <div class="h3 mb-0">
+                {{ ux_icon('tabler:coins', { class: 'icon me-2' }) }}{{ 'guiziweb_sylius_token.ui.tokens'|trans }}
+            </div>
+            {% if wallet is not null %}
+                <a href="{{ path('guiziweb_sylius_token_admin_wallet_history', { id: wallet.id }) }}">
+                    {{ 'guiziweb_sylius_token.ui.see_all'|trans }}
+                </a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {% if wallet is null %}
+                <p class="text-muted mb-0">{{ 'guiziweb_sylius_token.ui.no_wallet'|trans }}</p>
+            {% else %}
+                {% set statistics = guiziweb_customer_token_statistics(customer) %}
+                <div class="row">
+                    {% set tiles = [
+                        { icon: 'tabler:wallet', label: 'guiziweb_sylius_token.ui.balance', value: wallet.balance, test: 'balance' },
+                        { icon: 'tabler:arrow-down-circle', label: 'guiziweb_sylius_token.ui.total_credited', value: statistics.credited, test: 'credited' },
+                        { icon: 'tabler:arrow-up-circle', label: 'guiziweb_sylius_token.ui.total_spent', value: statistics.spent, test: 'spent' },
+                    ] %}
+
+                    {% for tile in tiles %}
+                        <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="card card-sm">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="bg-gray text-muted avatar">{{ ux_icon(tile.icon) }}</span>
+                                        </div>
+                                        <div class="col">
+                                            <div>{{ tile.label|trans }}</div>
+                                            <div class="h2 mb-0 me-2" {{ sylius_test_html_attribute('customer-tokens-' ~ tile.test) }}>{{ tile.value }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

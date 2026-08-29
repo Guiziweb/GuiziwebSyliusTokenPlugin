@@ -16,11 +16,16 @@ guiziweb_sylius_token:
             token_amount: 'Tokens granted'
     ui:
         wallets: 'Token wallets'
+        tokens: 'Tokens'
+        history: 'Token history'
+        total_credited: 'Total credited'
+        total_spent: 'Total spent'
+        see_all: 'See full history'
         adjust: 'Adjust balance'
+        no_wallet: 'This customer has no tokens yet.'
         adjustment:
             credit: 'Add tokens'
             debit: 'Remove tokens'
-        token_pack: 'Token pack'
         token_products: 'Token packs'
         tariff: 'Token tariff'
         tariffs: 'Token tariffs'
@@ -34,6 +39,7 @@ guiziweb_sylius_token:
             types:
                 credit: 'Credit'
                 debit: 'Debit'
+                expiration: 'Expiration'
         product_variant:
             token_amount: 'Tokens'
     menu:
