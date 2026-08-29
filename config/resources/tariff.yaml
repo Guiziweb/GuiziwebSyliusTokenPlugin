@@ -1,0 +1,7 @@
+sylius_resource:
+    resources:
+        guiziweb_sylius_token.tariff:
+            driver: doctrine/orm
+            classes:
+                model: Guiziweb\SyliusTokenPlugin\Entity\TokenTariff\TokenTariff
+                form: Guiziweb\SyliusTokenPlugin\Form\Type\TokenTariffType

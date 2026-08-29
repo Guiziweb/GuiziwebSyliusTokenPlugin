@@ -8,9 +8,3 @@ sylius_grid:
                     path: tokenAmount
                     sortable: tokenAmount
                     position: 200
-                tokenPrice:
-                    type: string
-                    label: guiziweb_sylius_token.ui.product_variant.token_price
-                    path: tokenPrice
-                    sortable: tokenPrice
-                    position: 210

@@ -12,54 +12,22 @@ use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperatorInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletProviderInterface;
 use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Sylius\Behat\Service\SharedStorageInterface;
-use Sylius\Bundle\CoreBundle\Fixture\Factory\ExampleFactoryInterface;
-use Sylius\Component\Core\Formatter\StringInflector;
-use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
-use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Payment\PaymentTransitions;
-use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 use Webmozart\Assert\Assert;
 
 final readonly class TokenContext implements Context
 {
-    /**
-     * @param ExampleFactoryInterface<PaymentMethodInterface> $paymentMethodExampleFactory
-     * @param RepositoryInterface<PaymentMethodInterface> $paymentMethodRepository
-     */
     public function __construct(
         private EntityManagerInterface $entityManager,
         private WalletProviderInterface $walletProvider,
         private WalletOperatorInterface $walletOperator,
         private SharedStorageInterface $sharedStorage,
-        private ExampleFactoryInterface $paymentMethodExampleFactory,
-        private RepositoryInterface $paymentMethodRepository,
         private StateMachineInterface $stateMachine,
     ) {
-    }
-
-    /**
-     * @Given the store has a payment method :name with a code :code and token_wallet gateway
-     */
-    public function theStoreHasATokenWalletPaymentMethod(string $name, string $code): void
-    {
-        $channel = $this->sharedStorage->has('channel') ? $this->sharedStorage->get('channel') : null;
-
-        $paymentMethod = $this->paymentMethodExampleFactory->create([
-            'name' => ucfirst($name),
-            'code' => $code,
-            'gatewayName' => StringInflector::nameToLowercaseCode($name),
-            'gatewayFactory' => 'token_wallet',
-            'usePayum' => false,
-            'enabled' => true,
-            'channels' => $channel instanceof ChannelInterface ? [$channel] : [],
-        ]);
-
-        $this->paymentMethodRepository->add($paymentMethod);
-        $this->sharedStorage->set('payment_method', $paymentMethod);
     }
 
     /**
@@ -93,19 +61,6 @@ final readonly class TokenContext implements Context
         Assert::isInstanceOf($variant, TokenPackInterface::class);
 
         $variant->setTokenAmount((int) $amount);
-        $this->entityManager->flush();
-    }
-
-    /**
-     * @Given /^(this product) costs "([^"]+)" tokens$/
-     * @Given /^the (product "[^"]+") costs "([^"]+)" tokens$/
-     */
-    public function theProductCostsTokens(ProductInterface $product, string $amount): void
-    {
-        $variant = $product->getVariants()->first();
-        Assert::isInstanceOf($variant, TokenPackInterface::class);
-
-        $variant->setTokenPrice((int) $amount);
         $this->entityManager->flush();
     }
 

@@ -17,9 +17,15 @@ final class AdminMenuListener
         }
 
         $catalog
-            ->addChild('guiziweb_token_products', ['route' => 'guiziweb_sylius_token_admin_token_product_index'])
+            ->addChild('guiziweb_token_packs', ['route' => 'guiziweb_sylius_token_admin_token_product_index'])
             ->setLabel('guiziweb_sylius_token.ui.token_products')
             ->setLabelAttribute('icon', 'tabler:coins')
+        ;
+
+        $catalog
+            ->addChild('guiziweb_token_tariffs', ['route' => 'guiziweb_sylius_token_admin_tariff_index'])
+            ->setLabel('guiziweb_sylius_token.ui.tariffs')
+            ->setLabelAttribute('icon', 'tabler:receipt')
         ;
     }
 }

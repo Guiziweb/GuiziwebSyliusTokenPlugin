@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Guiziweb\SyliusTokenPlugin\Fixture;
 
 use Doctrine\Persistence\ObjectManager;
-use Guiziweb\SyliusTokenPlugin\Form\Type\TokenWalletGatewayConfigurationType;
+use Guiziweb\SyliusTokenPlugin\Entity\TokenTariff\TokenTariffInterface;
 use Guiziweb\SyliusTokenPlugin\Product\TokenPackInterface;
 use Sylius\Bundle\FixturesBundle\Fixture\AbstractFixture;
-use Sylius\Bundle\PayumBundle\Model\GatewayConfigInterface;
 use Sylius\Component\Core\Formatter\StringInflector;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\ChannelPricingInterface;
-use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
@@ -26,22 +24,20 @@ final class TokenFixture extends AbstractFixture
      * @param FactoryInterface<ProductInterface> $productFactory
      * @param FactoryInterface<ProductVariantInterface> $productVariantFactory
      * @param FactoryInterface<ChannelPricingInterface> $channelPricingFactory
-     * @param FactoryInterface<PaymentMethodInterface> $paymentMethodFactory
-     * @param FactoryInterface<GatewayConfigInterface> $gatewayConfigFactory
      * @param RepositoryInterface<ChannelInterface> $channelRepository
      * @param RepositoryInterface<ProductInterface> $productRepository
-     * @param RepositoryInterface<PaymentMethodInterface> $paymentMethodRepository
+     * @param FactoryInterface<TokenTariffInterface> $tariffFactory
+     * @param RepositoryInterface<TokenTariffInterface> $tariffRepository
      */
     public function __construct(
         private readonly ObjectManager $objectManager,
         private readonly FactoryInterface $productFactory,
         private readonly FactoryInterface $productVariantFactory,
         private readonly FactoryInterface $channelPricingFactory,
-        private readonly FactoryInterface $paymentMethodFactory,
-        private readonly FactoryInterface $gatewayConfigFactory,
         private readonly RepositoryInterface $channelRepository,
         private readonly RepositoryInterface $productRepository,
-        private readonly RepositoryInterface $paymentMethodRepository,
+        private readonly FactoryInterface $tariffFactory,
+        private readonly RepositoryInterface $tariffRepository,
     ) {
     }
 
@@ -52,9 +48,8 @@ final class TokenFixture extends AbstractFixture
 
     /**
      * @param array{
-     *     payment_method_name: string,
      *     packs: array<int, array{name: string, tokens: int, price: int}>,
-     *     consumables: array<int, array{name: string, tokens: int}>
+     *     tariffs: array<int, array{code: string, name: string, cost: int}>
      * } $options
      */
     public function load(array $options): void
@@ -62,14 +57,12 @@ final class TokenFixture extends AbstractFixture
         /** @var array<int, ChannelInterface> $channels */
         $channels = $this->channelRepository->findAll();
 
-        $this->createPaymentMethod($options['payment_method_name'], $channels);
-
         foreach ($options['packs'] as $pack) {
             $this->createProduct($pack['name'], $pack['price'], $channels, tokenAmount: $pack['tokens']);
         }
 
-        foreach ($options['consumables'] as $consumable) {
-            $this->createProduct($consumable['name'], 0, $channels, tokenPrice: $consumable['tokens']);
+        foreach ($options['tariffs'] as $tariff) {
+            $this->createTariff($tariff['code'], $tariff['name'], $tariff['cost']);
         }
 
         $this->objectManager->flush();
@@ -79,7 +72,6 @@ final class TokenFixture extends AbstractFixture
     {
         $optionsNode
             ->children()
-                ->scalarNode('payment_method_name')->defaultValue('Tokens')->end()
                 ->arrayNode('packs')
                     ->defaultValue([
                         ['name' => 'Starter pack', 'tokens' => 100, 'price' => 1000],
@@ -94,20 +86,36 @@ final class TokenFixture extends AbstractFixture
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('consumables')
+                ->arrayNode('tariffs')
                     ->defaultValue([
-                        ['name' => 'CV generation', 'tokens' => 5],
-                        ['name' => 'HD image generation', 'tokens' => 20],
+                        ['code' => 'cv_generation', 'name' => 'CV generation', 'cost' => 5],
+                        ['code' => 'hd_image', 'name' => 'HD image generation', 'cost' => 20],
                     ])
                     ->arrayPrototype()
                         ->children()
+                            ->scalarNode('code')->cannotBeEmpty()->end()
                             ->scalarNode('name')->cannotBeEmpty()->end()
-                            ->integerNode('tokens')->min(1)->end()
+                            ->integerNode('cost')->min(1)->end()
                         ->end()
                     ->end()
                 ->end()
             ->end()
         ;
+    }
+
+    private function createTariff(string $code, string $name, int $cost): void
+    {
+        if (null !== $this->tariffRepository->findOneBy(['code' => $code])) {
+            return;
+        }
+
+        $tariff = $this->tariffFactory->createNew();
+        $tariff->setCode($code);
+        $tariff->setName($name);
+        $tariff->setCost($cost);
+        $tariff->setEnabled(true);
+
+        $this->objectManager->persist($tariff);
     }
 
     /** @param array<int, ChannelInterface> $channels */
@@ -116,7 +124,6 @@ final class TokenFixture extends AbstractFixture
         int $price,
         array $channels,
         ?int $tokenAmount = null,
-        ?int $tokenPrice = null,
     ): void {
         $code = StringInflector::nameToCode(strtoupper($name));
 
@@ -146,7 +153,6 @@ final class TokenFixture extends AbstractFixture
         $variant->setShippingRequired(false);
         $variant->setTracked(false);
         $variant->setTokenAmount($tokenAmount);
-        $variant->setTokenPrice($tokenPrice);
 
         foreach ($channels as $channel) {
             $channelPricing = $this->channelPricingFactory->createNew();
@@ -157,34 +163,5 @@ final class TokenFixture extends AbstractFixture
 
         $product->addVariant($variant);
         $this->objectManager->persist($product);
-    }
-
-    /** @param array<int, ChannelInterface> $channels */
-    private function createPaymentMethod(string $name, array $channels): void
-    {
-        $code = TokenWalletGatewayConfigurationType::GATEWAY_FACTORY;
-
-        if (null !== $this->paymentMethodRepository->findOneBy(['code' => $code])) {
-            return;
-        }
-
-        $gatewayConfig = $this->gatewayConfigFactory->createNew();
-        $gatewayConfig->setFactoryName(TokenWalletGatewayConfigurationType::GATEWAY_FACTORY);
-        $gatewayConfig->setGatewayName(TokenWalletGatewayConfigurationType::GATEWAY_FACTORY);
-        $gatewayConfig->setUsePayum(false);
-
-        $paymentMethod = $this->paymentMethodFactory->createNew();
-        $paymentMethod->setCode($code);
-        $paymentMethod->setGatewayConfig($gatewayConfig);
-        $paymentMethod->setEnabled(true);
-        $paymentMethod->setCurrentLocale('en_US');
-        $paymentMethod->setFallbackLocale('en_US');
-        $paymentMethod->setName($name);
-
-        foreach ($channels as $channel) {
-            $paymentMethod->addChannel($channel);
-        }
-
-        $this->objectManager->persist($paymentMethod);
     }
 }

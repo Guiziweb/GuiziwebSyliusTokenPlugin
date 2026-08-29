@@ -1,7 +1,0 @@
-guiziweb_sylius_token:
-    order:
-        mixed: 'Products paid with tokens cannot be ordered together with other products.'
-        guest: 'You need an account to order products paid with tokens.'
-        insufficient_balance: 'This order costs %price% tokens but your balance is %balance%.'
-    product_variant:
-        pack_and_consumable: 'A product variant cannot both grant tokens and cost tokens.'

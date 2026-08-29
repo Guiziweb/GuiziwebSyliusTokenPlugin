@@ -1,0 +1,43 @@
+sylius_grid:
+    grids:
+        guiziweb_sylius_token_admin_tariff:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: "%guiziweb_sylius_token.model.tariff.class%"
+            sorting:
+                cost: asc
+            limits: [10, 25, 50]
+            fields:
+                name:
+                    type: string
+                    label: sylius.ui.name
+                    sortable: ~
+                code:
+                    type: string
+                    label: sylius.ui.code
+                    sortable: ~
+                cost:
+                    type: string
+                    label: guiziweb_sylius_token.form.tariff.cost
+                    sortable: ~
+                enabled:
+                    type: twig
+                    label: sylius.ui.enabled
+                    options:
+                        template: "@SyliusUi/grid/field/enabled.html.twig"
+            filters:
+                search:
+                    type: string
+                    label: sylius.ui.search
+                    options:
+                        fields: [code, name]
+            actions:
+                main:
+                    create:
+                        type: create
+                item:
+                    update:
+                        type: update
+                    delete:
+                        type: delete

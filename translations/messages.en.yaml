@@ -1,10 +1,16 @@
 guiziweb_sylius_token:
     form:
+        tariff:
+            cost: 'Cost in tokens'
+            cost_help: 'How many tokens one use of this action consumes.'
         product_variant:
             token_amount: 'Tokens granted'
-            token_price: 'Price in tokens'
     ui:
+        token_pack: 'Token pack'
         token_products: 'Token packs'
+        tariff: 'Token tariff'
+        tariffs: 'Token tariffs'
+        tariffs_subheader: 'What each action costs in tokens'
         create_pack: 'Create'
         my_tokens: 'My tokens'
         balance: 'Available tokens'
@@ -16,9 +22,6 @@ guiziweb_sylius_token:
                 debit: 'Debit'
         product_variant:
             token_amount: 'Tokens'
-            token_price: 'Token price'
-    gateway_factory:
-        token_wallet: 'Token wallet'
     menu:
         shop:
             account:

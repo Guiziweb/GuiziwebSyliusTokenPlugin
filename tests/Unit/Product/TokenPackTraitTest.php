@@ -11,18 +11,6 @@ use Symfony\Component\Validator\Validation;
 
 final class TokenPackTraitTest extends TestCase
 {
-    public function testAVariantCannotBothGrantAndCostTokens(): void
-    {
-        $variant = $this->createVariant();
-        $variant->setTokenAmount(100);
-        $variant->setTokenPrice(10);
-
-        $violations = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator()->validate($variant, null, ['sylius']);
-
-        self::assertCount(1, $violations);
-        self::assertSame('tokenPrice', $violations[0]->getPropertyPath());
-    }
-
     public function testAPackAloneIsValid(): void
     {
         $variant = $this->createVariant();

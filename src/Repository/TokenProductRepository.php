@@ -18,21 +18,9 @@ final readonly class TokenProductRepository
     ) {
     }
 
-    public function createListQueryBuilder(string $localeCode): QueryBuilder
-    {
-        return $this->createQueryBuilder($localeCode)
-            ->andWhere('o.tokenAmount IS NOT NULL OR o.tokenPrice IS NOT NULL')
-        ;
-    }
-
     public function createPackListQueryBuilder(string $localeCode): QueryBuilder
     {
         return $this->createQueryBuilder($localeCode)->andWhere('o.tokenAmount IS NOT NULL');
-    }
-
-    public function createConsumableListQueryBuilder(string $localeCode): QueryBuilder
-    {
-        return $this->createQueryBuilder($localeCode)->andWhere('o.tokenPrice IS NOT NULL');
     }
 
     private function createQueryBuilder(string $localeCode): QueryBuilder

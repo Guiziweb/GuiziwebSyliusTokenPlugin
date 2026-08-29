@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusTokenPlugin\EventListener\Workflow\Payment;
 
-use Guiziweb\SyliusTokenPlugin\Form\Type\TokenWalletGatewayConfigurationType;
 use Guiziweb\SyliusTokenPlugin\Wallet\OrderTokenCreditorInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
@@ -21,10 +20,6 @@ final readonly class CreditTokensListener
     {
         $payment = $event->getSubject();
         Assert::isInstanceOf($payment, PaymentInterface::class);
-
-        if (TokenWalletGatewayConfigurationType::GATEWAY_FACTORY === $payment->getMethod()?->getGatewayConfig()?->getFactoryName()) {
-            return;
-        }
 
         $order = $payment->getOrder();
         Assert::isInstanceOf($order, OrderInterface::class);

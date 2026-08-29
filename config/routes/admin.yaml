@@ -1,5 +1,5 @@
 guiziweb_sylius_token_admin_token_product_index:
-    path: /token-products
+    path: /token-packs
     methods: [GET]
     defaults:
         _controller: sylius.controller.product_variant::indexAction
@@ -7,3 +7,17 @@ guiziweb_sylius_token_admin_token_product_index:
             section: admin
             template: "@GuiziwebSyliusTokenPlugin/admin/token_product/index.html.twig"
             grid: guiziweb_sylius_token_admin_token_product
+
+guiziweb_sylius_token_admin_tariff:
+    resource: |
+        alias: guiziweb_sylius_token.tariff
+        section: admin
+        templates: "@SyliusAdmin/shared/crud"
+        grid: guiziweb_sylius_token_admin_tariff
+        vars:
+            all:
+                subheader: guiziweb_sylius_token.ui.tariffs_subheader
+            index:
+                icon: 'tabler:receipt'
+    type: sylius.resource
+    prefix: /

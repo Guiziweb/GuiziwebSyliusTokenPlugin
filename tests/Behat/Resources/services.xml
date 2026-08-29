@@ -11,8 +11,6 @@
             <argument type="service" id="guiziweb_sylius_token.wallet.provider" />
             <argument type="service" id="guiziweb_sylius_token.wallet.operator" />
             <argument type="service" id="sylius.behat.shared_storage" />
-            <argument type="service" id="sylius.fixture.example_factory.payment_method" />
-            <argument type="service" id="sylius.repository.payment_method" />
             <argument type="service" id="sylius_abstraction.state_machine" />
         </service>
 

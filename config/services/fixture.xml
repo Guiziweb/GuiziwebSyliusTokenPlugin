@@ -11,11 +11,10 @@
             <argument type="service" id="sylius.factory.product" />
             <argument type="service" id="sylius.factory.product_variant" />
             <argument type="service" id="sylius.factory.channel_pricing" />
-            <argument type="service" id="sylius.factory.payment_method" />
-            <argument type="service" id="sylius.factory.gateway_config" />
             <argument type="service" id="sylius.repository.channel" />
             <argument type="service" id="sylius.repository.product" />
-            <argument type="service" id="sylius.repository.payment_method" />
+            <argument type="service" id="guiziweb_sylius_token.factory.tariff" />
+            <argument type="service" id="guiziweb_sylius_token.repository.tariff" />
             <tag name="sylius_fixtures.fixture" />
         </service>
 

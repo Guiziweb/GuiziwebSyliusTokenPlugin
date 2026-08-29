@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusTokenPlugin\Wallet;
 
+use Guiziweb\SyliusTokenPlugin\Entity\TokenTariff\TokenTariffInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
-use Guiziweb\SyliusTokenPlugin\Exception\NotConsumableException;
-use Guiziweb\SyliusTokenPlugin\Product\TokenPackInterface;
+use Guiziweb\SyliusTokenPlugin\Exception\TariffNotAvailableException;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
@@ -20,20 +20,20 @@ final readonly class TokenConsumer implements TokenConsumerInterface
     ) {
     }
 
-    public function consume(CustomerInterface $customer, TokenPackInterface $consumable, string $reference, int $quantity = 1): void
+    public function consume(CustomerInterface $customer, TokenTariffInterface $tariff, string $reference, int $quantity = 1): void
     {
         $this->walletOperator->debit(
             $this->walletProvider->provideForCustomer($customer),
             new TokenDebit(
-                amount: $this->price($consumable, $quantity),
+                amount: $this->cost($tariff, $quantity),
                 idempotencyKey: $reference,
             ),
         );
     }
 
-    public function canConsume(CustomerInterface $customer, TokenPackInterface $consumable, int $quantity = 1): bool
+    public function canConsume(CustomerInterface $customer, TokenTariffInterface $tariff, int $quantity = 1): bool
     {
-        return $this->getBalance($customer) >= $this->price($consumable, $quantity);
+        return $this->getBalance($customer) >= $this->cost($tariff, $quantity);
     }
 
     public function getBalance(CustomerInterface $customer): int
@@ -43,19 +43,18 @@ final readonly class TokenConsumer implements TokenConsumerInterface
         return null === $wallet ? 0 : $this->walletOperator->getBalance($wallet);
     }
 
-    private function price(TokenPackInterface $consumable, int $quantity): int
+    private function cost(TokenTariffInterface $tariff, int $quantity): int
     {
-        if (!$consumable->isConsumable()) {
-            throw new NotConsumableException();
+        $cost = $tariff->getCost();
+
+        if (!$tariff->isEnabled() || null === $cost || $cost <= 0) {
+            throw new TariffNotAvailableException($tariff);
         }
 
         if ($quantity <= 0) {
             throw new \InvalidArgumentException('The quantity must be positive.');
         }
 
-        /** @var int $tokenPrice */
-        $tokenPrice = $consumable->getTokenPrice();
-
-        return $tokenPrice * $quantity;
+        return $cost * $quantity;
     }
 }

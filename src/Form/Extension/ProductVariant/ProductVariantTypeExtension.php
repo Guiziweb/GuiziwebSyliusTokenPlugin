@@ -13,16 +13,10 @@ final class ProductVariantTypeExtension extends AbstractTypeExtension
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('tokenAmount', IntegerType::class, [
-                'label' => 'guiziweb_sylius_token.form.product_variant.token_amount',
-                'required' => false,
-            ])
-            ->add('tokenPrice', IntegerType::class, [
-                'label' => 'guiziweb_sylius_token.form.product_variant.token_price',
-                'required' => false,
-            ])
-        ;
+        $builder->add('tokenAmount', IntegerType::class, [
+            'label' => 'guiziweb_sylius_token.form.product_variant.token_amount',
+            'required' => false,
+        ]);
     }
 
     public static function getExtendedTypes(): iterable

@@ -11,10 +11,4 @@ interface TokenPackInterface
     public function setTokenAmount(?int $tokenAmount): void;
 
     public function isTokenPack(): bool;
-
-    public function getTokenPrice(): ?int;
-
-    public function setTokenPrice(?int $tokenPrice): void;
-
-    public function isConsumable(): bool;
 }
