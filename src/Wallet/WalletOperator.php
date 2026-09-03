@@ -7,11 +7,11 @@ namespace Guiziweb\SyliusTokenPlugin\Wallet;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatchInterface;
-use Guiziweb\SyliusTokenPlugin\Entity\TokenOperation\TokenOperation;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenTransaction\TokenTransactionType;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
 use Guiziweb\SyliusTokenPlugin\Exception\InsufficientTokenBalanceException;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenBatchFactoryInterface;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenOperationFactoryInterface;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenTransactionFactoryInterface;
 use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
 use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
@@ -29,6 +29,7 @@ final readonly class WalletOperator implements WalletOperatorInterface
         private ClockInterface $clock,
         private TokenBatchFactoryInterface $batchFactory,
         private TokenTransactionFactoryInterface $transactionFactory,
+        private TokenOperationFactoryInterface $operationFactory,
     ) {
     }
 
@@ -140,7 +141,9 @@ final readonly class WalletOperator implements WalletOperatorInterface
                 $this->settleExpiredBatches($wallet, $now);
 
                 if ($operation($now)) {
-                    $this->entityManager->persist(new TokenOperation($wallet, $idempotencyKey, $type, $now));
+                    $this->entityManager->persist(
+                        $this->operationFactory->createNew($wallet, $idempotencyKey, $type, $now),
+                    );
                 }
 
                 $this->entityManager->flush();

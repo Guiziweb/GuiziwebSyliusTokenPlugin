@@ -9,11 +9,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatch;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatchInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatchOrigin;
+use Guiziweb\SyliusTokenPlugin\Entity\TokenOperation\TokenOperation;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenTransaction\TokenTransaction;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenTransaction\TokenTransactionType;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
 use Guiziweb\SyliusTokenPlugin\Exception\InsufficientTokenBalanceException;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenBatchFactory;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenOperationFactory;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenTransactionFactory;
 use Guiziweb\SyliusTokenPlugin\Model\PurchasePrice;
 use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
@@ -217,6 +219,7 @@ final class WalletOperatorTest extends TestCase
             new MockClock(new \DateTimeImmutable(self::NOW)),
             new TokenBatchFactory(TokenBatch::class),
             new TokenTransactionFactory(TokenTransaction::class),
+            new TokenOperationFactory(TokenOperation::class),
         );
     }
 

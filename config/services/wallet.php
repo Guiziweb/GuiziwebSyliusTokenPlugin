@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Guiziweb\SyliusTokenPlugin\Factory\TokenBatchFactory;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenBatchFactoryInterface;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenOperationFactory;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenOperationFactoryInterface;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenTransactionFactory;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenTransactionFactoryInterface;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenWalletFactory;
@@ -52,6 +54,11 @@ return static function (ContainerConfigurator $container): void {
     ;
     $services->alias(TokenTransactionFactoryInterface::class, 'guiziweb_sylius_token.transaction.factory');
 
+    $services->set('guiziweb_sylius_token.operation.factory', TokenOperationFactory::class)
+        ->args([param('guiziweb_sylius_token.model.operation.class')])
+    ;
+    $services->alias(TokenOperationFactoryInterface::class, 'guiziweb_sylius_token.operation.factory');
+
     $services->set('guiziweb_sylius_token.wallet.provider', WalletProvider::class)
         ->args([
             service('guiziweb_sylius_token.repository.wallet'),
@@ -71,6 +78,7 @@ return static function (ContainerConfigurator $container): void {
             service('clock'),
             service('guiziweb_sylius_token.batch.factory'),
             service('guiziweb_sylius_token.transaction.factory'),
+            service('guiziweb_sylius_token.operation.factory'),
         ])
     ;
     $services->alias(WalletOperatorInterface::class, 'guiziweb_sylius_token.wallet.operator');

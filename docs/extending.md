@@ -39,8 +39,8 @@ sylius_resource:
                 model: App\Entity\Token\TokenWallet
 ```
 
-The same applies to `guiziweb_sylius_token.batch`, `guiziweb_sylius_token.transaction`
-and `guiziweb_sylius_token.price`.
+The same applies to `guiziweb_sylius_token.batch`, `guiziweb_sylius_token.transaction`,
+`guiziweb_sylius_token.operation` and `guiziweb_sylius_token.price`.
 
 The plugin builds these entities through dedicated factories, so a substituted
 class is really the one being persisted. Their constructors keep their arguments
