@@ -48,7 +48,7 @@ guiziweb_sylius_token_shop:
         _locale: ^[A-Za-z]{2,4}(_([A-Za-z]{4}|[0-9]{3}))?(_([A-Za-z]{2}|[0-9]{3}))?$
 ```
 
-## Make your product variants able to grant tokens
+## 5. Apply the trait to your product variant
 
 **This step is required and cannot be automated.** A pack grants tokens through a
 field carried by your own `ProductVariant` entity, so the plugin needs you to apply
@@ -70,10 +70,25 @@ class ProductVariant extends BaseProductVariant implements TokenPackInterface
 }
 ```
 
-Without it, creating a token pack fails with
-`Apply TokenPackTrait to your ProductVariant entity.`
+Without it the plugin cannot work at all: creating a token pack fails with
+`Apply TokenPackTrait to your ProductVariant entity.`, and the admin variant form
+and grid raise a `NoSuchPropertyException` for **every** product, token pack or not.
 
-## 5. Run the migrations
+If you have not extended `ProductVariant` yet, follow the
+[Sylius model customization guide](https://docs.sylius.com/the-customization-guide/customizing-models)
+first, and point the resource at your class:
+
+```yaml
+# config/packages/_sylius.yaml
+
+sylius_product:
+    resources:
+        product_variant:
+            classes:
+                model: App\Entity\Product\ProductVariant
+```
+
+## 6. Run the migrations
 
 ```bash
 bin/console doctrine:migrations:migrate

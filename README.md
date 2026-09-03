@@ -46,10 +46,10 @@ composer require guiziweb/sylius-token-plugin
 ```
 
 Then register the bundle, import the configuration and the routes, apply the
-plugin trait to your `ProductVariant`, and run the migrations. The five steps are
+plugin trait to your `ProductVariant`, and run the migrations. The six steps are
 in [installation](docs/installation.md) — none of them can be skipped: without the
-trait a product cannot grant tokens, and without the imports the application will
-not boot.
+trait the admin product screens break, and without the imports the application
+will not boot.
 
 ## Documentation
 
