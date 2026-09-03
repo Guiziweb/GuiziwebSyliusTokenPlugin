@@ -95,11 +95,10 @@ guiziweb_sylius_token_admin_wallet_index:
 guiziweb_sylius_token_admin_wallet_adjust:
     path: /token-wallets/{id}/adjust
     methods: [GET, POST]
+    requirements:
+        id: '\d+'
     defaults:
         _controller: Guiziweb\SyliusTokenPlugin\Controller\Admin\WalletAdjustmentController
-        _sylius:
-            section: admin
-            permission: true
 
 guiziweb_sylius_token_admin_wallet_history:
     path: /token-wallets/{id}/history
