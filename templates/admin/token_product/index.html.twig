@@ -6,5 +6,5 @@
 {% block title %}{{ header|trans }} | {{ parent() }}{% endblock %}
 
 {% block body %}
-    {% hook 'index' with { _prefixes: prefixes, metadata, resources, header } %}
+    {% hook 'index' with { _prefixes: prefixes, metadata, resources, header, title: header } %}
 {% endblock %}

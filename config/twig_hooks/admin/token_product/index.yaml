@@ -1,0 +1,12 @@
+sylius_twig_hooks:
+    hooks:
+        'guiziweb_sylius_token.admin.token_product.index.content.header.title_block':
+            title:
+                template: '@SyliusAdmin/shared/crud/common/content/header/title_block/title.html.twig'
+                configuration:
+                    title: guiziweb_sylius_token.ui.token_products
+                    icon: 'tabler:coins'
+                priority: 100
+            actions:
+                template: '@SyliusAdmin/shared/crud/common/content/header/title_block/actions.html.twig'
+                priority: 0

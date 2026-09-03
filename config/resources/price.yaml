@@ -1,0 +1,7 @@
+sylius_resource:
+    resources:
+        guiziweb_sylius_token.price:
+            driver: doctrine/orm
+            classes:
+                model: Guiziweb\SyliusTokenPlugin\Entity\TokenPrice\TokenPrice
+                form: Guiziweb\SyliusTokenPlugin\Form\Type\TokenPriceType

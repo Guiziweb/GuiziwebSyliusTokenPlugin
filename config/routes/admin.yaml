@@ -5,20 +5,79 @@ guiziweb_sylius_token_admin_token_product_index:
         _controller: sylius.controller.product_variant::indexAction
         _sylius:
             section: admin
+            permission: true
             template: "@GuiziwebSyliusTokenPlugin/admin/token_product/index.html.twig"
             grid: guiziweb_sylius_token_admin_token_product
 
-guiziweb_sylius_token_admin_tariff:
+guiziweb_sylius_token_admin_token_product_create:
+    path: /token-packs/new
+    methods: [GET, POST]
+    defaults:
+        _controller: sylius.controller.product::createAction
+        _sylius:
+            section: admin
+            permission: true
+            factory:
+                method: createTokenPack
+            form:
+                type: Guiziweb\SyliusTokenPlugin\Form\Type\Admin\TokenPackType
+            template: "@SyliusAdmin/shared/crud/create.html.twig"
+            redirect:
+                route: guiziweb_sylius_token_admin_token_product_update
+                parameters: { id: resource.id }
+            vars:
+                hook_prefix: guiziweb_sylius_token.admin.token_pack
+                index:
+                    route:
+                        name: guiziweb_sylius_token_admin_token_product_index
+
+guiziweb_sylius_token_admin_token_product_show:
+    path: /token-packs/{id}
+    methods: [GET]
+    requirements:
+        id: '\d+'
+    defaults:
+        _controller: sylius.controller.product::showAction
+        _sylius:
+            section: admin
+            permission: true
+            template: "@SyliusAdmin/shared/crud/show.html.twig"
+            vars:
+                hook_prefix: guiziweb_sylius_token.admin.token_pack
+                index:
+                    route:
+                        name: guiziweb_sylius_token_admin_token_product_index
+                update:
+                    route:
+                        name: guiziweb_sylius_token_admin_token_product_update
+
+guiziweb_sylius_token_admin_token_product_update:
+    path: /token-packs/{id}/edit
+    methods: [GET, PUT, PATCH, POST]
+    defaults:
+        _controller: sylius.controller.product::updateAction
+        _sylius:
+            section: admin
+            permission: true
+            form:
+                type: Guiziweb\SyliusTokenPlugin\Form\Type\Admin\TokenPackType
+            template: "@SyliusAdmin/shared/crud/update.html.twig"
+            vars:
+                hook_prefix: guiziweb_sylius_token.admin.token_pack
+                index:
+                    route:
+                        name: guiziweb_sylius_token_admin_token_product_index
+
+guiziweb_sylius_token_admin_price:
     resource: |
-        alias: guiziweb_sylius_token.tariff
+        alias: guiziweb_sylius_token.price
         section: admin
+        permission: true
         templates: "@SyliusAdmin/shared/crud"
-        grid: guiziweb_sylius_token_admin_tariff
+        grid: guiziweb_sylius_token_admin_price
         vars:
             all:
-                subheader: guiziweb_sylius_token.ui.tariffs_subheader
-            index:
-                icon: 'tabler:receipt'
+                hook_prefix: guiziweb_sylius_token.admin.price
     type: sylius.resource
     prefix: /
 
@@ -29,6 +88,7 @@ guiziweb_sylius_token_admin_wallet_index:
         _controller: guiziweb_sylius_token.controller.wallet::indexAction
         _sylius:
             section: admin
+            permission: true
             template: "@GuiziwebSyliusTokenPlugin/admin/wallet/index.html.twig"
             grid: guiziweb_sylius_token_admin_wallet
 
@@ -37,6 +97,9 @@ guiziweb_sylius_token_admin_wallet_adjust:
     methods: [GET, POST]
     defaults:
         _controller: Guiziweb\SyliusTokenPlugin\Controller\Admin\WalletAdjustmentController
+        _sylius:
+            section: admin
+            permission: true
 
 guiziweb_sylius_token_admin_wallet_history:
     path: /token-wallets/{id}/history
@@ -45,5 +108,6 @@ guiziweb_sylius_token_admin_wallet_history:
         _controller: guiziweb_sylius_token.controller.transaction::indexAction
         _sylius:
             section: admin
+            permission: true
             template: "@GuiziwebSyliusTokenPlugin/admin/wallet/history.html.twig"
             grid: guiziweb_sylius_token_admin_wallet_history

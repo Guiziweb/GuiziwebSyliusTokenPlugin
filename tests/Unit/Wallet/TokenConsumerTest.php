@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Guiziweb\SyliusTokenPlugin\Unit\Wallet;
 
-use Guiziweb\SyliusTokenPlugin\Entity\TokenTariff\TokenTariffInterface;
+use Guiziweb\SyliusTokenPlugin\Entity\TokenPrice\TokenPriceInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
-use Guiziweb\SyliusTokenPlugin\Exception\TariffNotAvailableException;
+use Guiziweb\SyliusTokenPlugin\Exception\TokenPriceNotAvailableException;
 use Guiziweb\SyliusTokenPlugin\Wallet\TokenConsumer;
-use Guiziweb\SyliusTokenPlugin\Wallet\TokenDebit;
+use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperatorInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletProviderInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -47,16 +47,16 @@ final class TokenConsumerTest extends TestCase
             }))
         ;
 
-        $this->createConsumer()->consume($this->customer, $this->createTariff(5), 'cv-4521', 3);
+        $this->createConsumer()->consume($this->customer, $this->createPrice(5), 'cv-4521', 3);
     }
 
-    public function testItRefusesADisabledTariff(): void
+    public function testItRefusesADisabledPrice(): void
     {
         $this->walletOperator->expects(self::never())->method('debit');
 
-        $this->expectException(TariffNotAvailableException::class);
+        $this->expectException(TokenPriceNotAvailableException::class);
 
-        $this->createConsumer()->consume($this->customer, $this->createTariff(5, enabled: false), 'cv-4521');
+        $this->createConsumer()->consume($this->customer, $this->createPrice(5, enabled: false), 'cv-4521');
     }
 
     public function testItTellsWhetherTheBalanceCoversTheConsumption(): void
@@ -66,8 +66,8 @@ final class TokenConsumerTest extends TestCase
 
         $consumer = $this->createConsumer();
 
-        self::assertTrue($consumer->canConsume($this->customer, $this->createTariff(5), 1));
-        self::assertFalse($consumer->canConsume($this->customer, $this->createTariff(5), 2));
+        self::assertTrue($consumer->canConsume($this->customer, $this->createPrice(5), 1));
+        self::assertFalse($consumer->canConsume($this->customer, $this->createPrice(5), 2));
     }
 
     public function testACustomerWithoutAWalletHasNothingToSpend(): void
@@ -75,7 +75,7 @@ final class TokenConsumerTest extends TestCase
         $this->walletRepository->method('findOneBy')->willReturn(null);
 
         self::assertSame(0, $this->createConsumer()->getBalance($this->customer));
-        self::assertFalse($this->createConsumer()->canConsume($this->customer, $this->createTariff(1)));
+        self::assertFalse($this->createConsumer()->canConsume($this->customer, $this->createPrice(1)));
     }
 
     private function createConsumer(): TokenConsumer
@@ -86,12 +86,12 @@ final class TokenConsumerTest extends TestCase
         return new TokenConsumer($this->walletRepository, $provider, $this->walletOperator);
     }
 
-    private function createTariff(int $cost, bool $enabled = true): TokenTariffInterface
+    private function createPrice(int $cost, bool $enabled = true): TokenPriceInterface
     {
-        $tariff = $this->createMock(TokenTariffInterface::class);
-        $tariff->method('getCost')->willReturn($cost);
-        $tariff->method('isEnabled')->willReturn($enabled);
+        $price = $this->createMock(TokenPriceInterface::class);
+        $price->method('getCost')->willReturn($cost);
+        $price->method('isEnabled')->willReturn($enabled);
 
-        return $tariff;
+        return $price;
     }
 }

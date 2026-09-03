@@ -1,10 +1,10 @@
 sylius_grid:
     grids:
-        guiziweb_sylius_token_admin_tariff:
+        guiziweb_sylius_token_admin_price:
             driver:
                 name: doctrine/orm
                 options:
-                    class: "%guiziweb_sylius_token.model.tariff.class%"
+                    class: "%guiziweb_sylius_token.model.price.class%"
             sorting:
                 cost: asc
             limits: [10, 25, 50]
@@ -19,7 +19,7 @@ sylius_grid:
                     sortable: ~
                 cost:
                     type: string
-                    label: guiziweb_sylius_token.form.tariff.cost
+                    label: guiziweb_sylius_token.form.price.cost
                     sortable: ~
                 enabled:
                     type: twig

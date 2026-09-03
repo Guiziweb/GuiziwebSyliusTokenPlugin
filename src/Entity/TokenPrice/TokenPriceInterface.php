@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Guiziweb\SyliusTokenPlugin\Entity\TokenTariff;
+namespace Guiziweb\SyliusTokenPlugin\Entity\TokenPrice;
 
+use Sylius\Resource\Model\CodeAwareInterface;
 use Sylius\Resource\Model\ResourceInterface;
 
-interface TokenTariffInterface extends ResourceInterface
+interface TokenPriceInterface extends ResourceInterface, CodeAwareInterface
 {
     public function getId(): ?int;
-
-    public function getCode(): ?string;
-
-    public function setCode(?string $code): void;
 
     public function getName(): ?string;
 

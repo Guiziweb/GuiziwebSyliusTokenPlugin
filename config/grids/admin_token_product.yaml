@@ -38,16 +38,15 @@ sylius_grid:
                     create_pack:
                         type: default
                         label: guiziweb_sylius_token.ui.create_pack
+                        icon: 'tabler:plus'
                         options:
                             link:
-                                route: sylius_admin_product_create_simple
-                                icon: 'tabler:plus'
+                                route: guiziweb_sylius_token_admin_token_product_create
                 item:
                     update:
                         type: update
                         options:
                             link:
-                                route: sylius_admin_product_variant_update
+                                route: guiziweb_sylius_token_admin_token_product_update
                                 parameters:
-                                    productId: resource.product.id
-                                    id: resource.id
+                                    id: resource.product.id

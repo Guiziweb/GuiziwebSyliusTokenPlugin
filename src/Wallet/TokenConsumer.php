@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusTokenPlugin\Wallet;
 
-use Guiziweb\SyliusTokenPlugin\Entity\TokenTariff\TokenTariffInterface;
+use Guiziweb\SyliusTokenPlugin\Entity\TokenPrice\TokenPriceInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
-use Guiziweb\SyliusTokenPlugin\Exception\TariffNotAvailableException;
+use Guiziweb\SyliusTokenPlugin\Exception\TokenPriceNotAvailableException;
+use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
@@ -20,22 +21,22 @@ final readonly class TokenConsumer implements TokenConsumerInterface
     ) {
     }
 
-    public function consume(CustomerInterface $customer, TokenTariffInterface $tariff, string $reference, int $quantity = 1): void
+    public function consume(CustomerInterface $customer, TokenPriceInterface $price, string $reference, int $quantity = 1): void
     {
         $this->walletOperator->debit(
             $this->walletProvider->provideForCustomer($customer),
             new TokenDebit(
-                amount: $this->cost($tariff, $quantity),
+                amount: $this->cost($price, $quantity),
                 idempotencyKey: $reference,
             ),
         );
     }
 
-    public function canConsume(CustomerInterface $customer, TokenTariffInterface $tariff, int $quantity = 1): bool
+    public function canConsume(CustomerInterface $customer, TokenPriceInterface $price, int $quantity = 1): bool
     {
         try {
-            $cost = $this->cost($tariff, $quantity);
-        } catch (TariffNotAvailableException|\InvalidArgumentException) {
+            $cost = $this->cost($price, $quantity);
+        } catch (TokenPriceNotAvailableException|\InvalidArgumentException) {
             return false;
         }
 
@@ -49,12 +50,12 @@ final readonly class TokenConsumer implements TokenConsumerInterface
         return null === $wallet ? 0 : $this->walletOperator->getBalance($wallet);
     }
 
-    private function cost(TokenTariffInterface $tariff, int $quantity): int
+    private function cost(TokenPriceInterface $price, int $quantity): int
     {
-        $cost = $tariff->getCost();
+        $cost = $price->getCost();
 
-        if (!$tariff->isEnabled() || null === $cost || $cost <= 0) {
-            throw new TariffNotAvailableException($tariff);
+        if (!$price->isEnabled() || null === $cost || $cost <= 0) {
+            throw new TokenPriceNotAvailableException($price);
         }
 
         if ($quantity <= 0) {

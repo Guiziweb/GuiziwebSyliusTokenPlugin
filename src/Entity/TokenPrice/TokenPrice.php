@@ -2,21 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Guiziweb\SyliusTokenPlugin\Entity\TokenTariff;
+namespace Guiziweb\SyliusTokenPlugin\Entity\TokenPrice;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'guiziweb_sylius_token_tariff')]
-class TokenTariff implements TokenTariffInterface
+#[ORM\Table(name: 'guiziweb_sylius_token_price')]
+#[UniqueEntity(fields: ['code'], message: 'guiziweb_sylius_token.price.code.unique', groups: ['sylius'])]
+class TokenPrice implements TokenPriceInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     protected ?int $id = null;
 
-    #[Assert\NotBlank(groups: ['sylius'])]
+    #[Assert\NotBlank(message: 'guiziweb_sylius_token.price.code.not_blank', groups: ['sylius'])]
+    #[Assert\Regex(pattern: '/^[\\w-]*$/', message: 'guiziweb_sylius_token.price.code.regex', groups: ['sylius'])]
     #[ORM\Column(type: 'string', length: 64, unique: true)]
     protected ?string $code = null;
 
