@@ -19,7 +19,7 @@ use Guiziweb\SyliusTokenPlugin\Model\PurchasePrice;
 use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
 use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
 use Guiziweb\SyliusTokenPlugin\Repository\TokenBatchRepositoryInterface;
-use Guiziweb\SyliusTokenPlugin\Repository\TokenTransactionRepositoryInterface;
+use Guiziweb\SyliusTokenPlugin\Repository\TokenOperationRepositoryInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\BatchAllocator;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperator;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -40,7 +40,7 @@ final class WalletOperatorTest extends TestCase
 
     private TokenBatchRepositoryInterface&MockObject $batchRepository;
 
-    private TokenTransactionRepositoryInterface&MockObject $transactionRepository;
+    private TokenOperationRepositoryInterface&MockObject $operationRepository;
 
     private EntityManagerInterface&MockObject $entityManager;
 
@@ -50,7 +50,7 @@ final class WalletOperatorTest extends TestCase
         $this->wallet = $this->createMock(TokenWalletInterface::class);
         $this->order = $this->createMock(OrderInterface::class);
         $this->batchRepository = $this->createMock(TokenBatchRepositoryInterface::class);
-        $this->transactionRepository = $this->createMock(TokenTransactionRepositoryInterface::class);
+        $this->operationRepository = $this->createMock(TokenOperationRepositoryInterface::class);
 
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->entityManager->method('wrapInTransaction')->willReturnCallback(
@@ -101,7 +101,7 @@ final class WalletOperatorTest extends TestCase
 
     public function testItDoesNotCreditTwiceUnderTheSameIdempotencyKey(): void
     {
-        $this->transactionRepository->method('hasIdempotencyKey')->willReturn(true);
+        $this->operationRepository->method('isRecorded')->willReturn(true);
 
         $batch = $this->createOperator()->credit($this->wallet, new TokenCredit(100, 'order-1'));
 
@@ -135,7 +135,7 @@ final class WalletOperatorTest extends TestCase
     {
         $batch = $this->createBatch(60);
         $this->batchRepository->method('findAvailable')->willReturn([$batch]);
-        $this->transactionRepository->method('hasIdempotencyKey')->willReturn(true);
+        $this->operationRepository->method('isRecorded')->willReturn(true);
 
         $this->createOperator()->debit($this->wallet, new TokenDebit(10, 'order-2'));
 
@@ -147,7 +147,7 @@ final class WalletOperatorTest extends TestCase
     {
         $batch = $this->createBatch(60);
         $this->batchRepository->method('findAvailable')->willReturn([$batch]);
-        $this->transactionRepository->method('hasIdempotencyKey')->willReturnCallback(
+        $this->operationRepository->method('isRecorded')->willReturnCallback(
             static fn (TokenWalletInterface $wallet, string $key, TokenTransactionType $type): bool => TokenTransactionType::Credit === $type,
         );
 
@@ -212,7 +212,7 @@ final class WalletOperatorTest extends TestCase
         return new WalletOperator(
             $this->entityManager,
             $this->batchRepository,
-            $this->transactionRepository,
+            $this->operationRepository,
             new BatchAllocator(),
             new MockClock(new \DateTimeImmutable(self::NOW)),
             new TokenBatchFactory(TokenBatch::class),

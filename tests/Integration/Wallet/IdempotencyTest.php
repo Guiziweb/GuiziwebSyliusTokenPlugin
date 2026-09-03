@@ -6,6 +6,7 @@ namespace Tests\Guiziweb\SyliusTokenPlugin\Integration\Wallet;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
+use Guiziweb\SyliusTokenPlugin\Exception\InsufficientTokenBalanceException;
 use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
 use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperatorInterface;
@@ -64,6 +65,24 @@ final class IdempotencyTest extends KernelTestCase
         $this->operator->debit($wallet, new TokenDebit(200, $key));
 
         self::assertSame(300, $this->operator->getBalance($wallet), 'A replayed consumption must never debit twice.');
+        self::assertSame(1, $this->countTransactions($wallet, 'debit'));
+    }
+
+    public function testARefusedDebitDoesNotBurnItsKey(): void
+    {
+        $wallet = $this->wallet();
+        $key = uniqid('consume-', true);
+
+        try {
+            $this->operator->debit($wallet, new TokenDebit(200, $key));
+            self::fail('The debit must be refused on an empty wallet.');
+        } catch (InsufficientTokenBalanceException) {
+        }
+
+        $this->operator->credit($wallet, new TokenCredit(500, uniqid('credit-', true)));
+        $this->operator->debit($wallet, new TokenDebit(200, $key));
+
+        self::assertSame(300, $this->operator->getBalance($wallet), 'A key spent on a refused debit must stay usable.');
         self::assertSame(1, $this->countTransactions($wallet, 'debit'));
     }
 

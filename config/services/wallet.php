@@ -9,6 +9,7 @@ use Guiziweb\SyliusTokenPlugin\Factory\TokenTransactionFactoryInterface;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenWalletFactory;
 use Guiziweb\SyliusTokenPlugin\Factory\TokenWalletFactoryInterface;
 use Guiziweb\SyliusTokenPlugin\Repository\TokenBatchRepositoryInterface;
+use Guiziweb\SyliusTokenPlugin\Repository\TokenOperationRepositoryInterface;
 use Guiziweb\SyliusTokenPlugin\Repository\TokenTransactionRepositoryInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\BatchAllocator;
 use Guiziweb\SyliusTokenPlugin\Wallet\BatchAllocatorInterface;
@@ -30,6 +31,7 @@ return static function (ContainerConfigurator $container): void {
 
     $services->alias(TokenBatchRepositoryInterface::class, 'guiziweb_sylius_token.repository.batch');
     $services->alias(TokenTransactionRepositoryInterface::class, 'guiziweb_sylius_token.repository.transaction');
+    $services->alias(TokenOperationRepositoryInterface::class, 'guiziweb_sylius_token.repository.operation');
 
     $services->set('guiziweb_sylius_token.wallet.batch_allocator', BatchAllocator::class);
     $services->alias(BatchAllocatorInterface::class, 'guiziweb_sylius_token.wallet.batch_allocator');
@@ -64,7 +66,7 @@ return static function (ContainerConfigurator $container): void {
         ->args([
             service('doctrine.orm.entity_manager'),
             service('guiziweb_sylius_token.repository.batch'),
-            service('guiziweb_sylius_token.repository.transaction'),
+            service('guiziweb_sylius_token.repository.operation'),
             service('guiziweb_sylius_token.wallet.batch_allocator'),
             service('clock'),
             service('guiziweb_sylius_token.batch.factory'),

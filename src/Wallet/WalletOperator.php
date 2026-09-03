@@ -7,6 +7,7 @@ namespace Guiziweb\SyliusTokenPlugin\Wallet;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatchInterface;
+use Guiziweb\SyliusTokenPlugin\Entity\TokenOperation\TokenOperation;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenTransaction\TokenTransactionType;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
 use Guiziweb\SyliusTokenPlugin\Exception\InsufficientTokenBalanceException;
@@ -15,7 +16,7 @@ use Guiziweb\SyliusTokenPlugin\Factory\TokenTransactionFactoryInterface;
 use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
 use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
 use Guiziweb\SyliusTokenPlugin\Repository\TokenBatchRepositoryInterface;
-use Guiziweb\SyliusTokenPlugin\Repository\TokenTransactionRepositoryInterface;
+use Guiziweb\SyliusTokenPlugin\Repository\TokenOperationRepositoryInterface;
 use Psr\Clock\ClockInterface;
 
 final readonly class WalletOperator implements WalletOperatorInterface
@@ -23,7 +24,7 @@ final readonly class WalletOperator implements WalletOperatorInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private TokenBatchRepositoryInterface $batchRepository,
-        private TokenTransactionRepositoryInterface $transactionRepository,
+        private TokenOperationRepositoryInterface $operationRepository,
         private BatchAllocatorInterface $batchAllocator,
         private ClockInterface $clock,
         private TokenBatchFactoryInterface $batchFactory,
@@ -39,7 +40,7 @@ final readonly class WalletOperator implements WalletOperatorInterface
             $wallet,
             $credit->idempotencyKey,
             TokenTransactionType::Credit,
-            function (\DateTimeImmutable $now) use ($wallet, $credit, &$batch): void {
+            function (\DateTimeImmutable $now) use ($wallet, $credit, &$batch): bool {
                 $batch = $this->batchFactory->createNew(
                     $wallet,
                     $credit->amount,
@@ -59,6 +60,8 @@ final readonly class WalletOperator implements WalletOperatorInterface
                     $credit->order,
                     $credit->reason,
                 ));
+
+                return true;
             },
         );
 
@@ -73,7 +76,7 @@ final readonly class WalletOperator implements WalletOperatorInterface
             $wallet,
             $debit->idempotencyKey,
             TokenTransactionType::Debit,
-            function (\DateTimeImmutable $now) use ($wallet, $debit, &$insufficientBalance): void {
+            function (\DateTimeImmutable $now) use ($wallet, $debit, &$insufficientBalance): bool {
                 try {
                     $allocations = $this->batchAllocator->allocate(
                         $this->batchRepository->findAvailable($wallet, $now),
@@ -82,7 +85,7 @@ final readonly class WalletOperator implements WalletOperatorInterface
                 } catch (InsufficientTokenBalanceException $exception) {
                     $insufficientBalance = $exception;
 
-                    return;
+                    return false;
                 }
 
                 foreach ($allocations as $allocation) {
@@ -98,6 +101,8 @@ final readonly class WalletOperator implements WalletOperatorInterface
                         $debit->reason,
                     ));
                 }
+
+                return true;
             },
         );
 
@@ -111,7 +116,7 @@ final readonly class WalletOperator implements WalletOperatorInterface
         return $this->batchRepository->getBalance($wallet, $this->clock->now());
     }
 
-    /** @param \Closure(\DateTimeImmutable): void $operation */
+    /** @param \Closure(\DateTimeImmutable): bool $operation */
     private function record(
         TokenWalletInterface $wallet,
         string $idempotencyKey,
@@ -126,14 +131,17 @@ final readonly class WalletOperator implements WalletOperatorInterface
 
                 $this->entityManager->lock($wallet, LockMode::PESSIMISTIC_WRITE);
 
-                if ($this->transactionRepository->hasIdempotencyKey($wallet, $idempotencyKey, $type)) {
+                if ($this->operationRepository->isRecorded($wallet, $idempotencyKey, $type)) {
                     return;
                 }
 
                 $now = $this->clock->now();
 
                 $this->settleExpiredBatches($wallet, $now);
-                $operation($now);
+
+                if ($operation($now)) {
+                    $this->entityManager->persist(new TokenOperation($wallet, $idempotencyKey, $type, $now));
+                }
 
                 $this->entityManager->flush();
             },

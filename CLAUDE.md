@@ -90,6 +90,7 @@ payment, and spent later against a price list.
 - **TokenBatch** - tokens arrive in batches, each with its own acquisition date,
   purchase price and optional expiry
 - **TokenTransaction** - append-only ledger, the source of truth
+- **TokenOperation** - one row per recorded operation, the idempotency registry
 - **TokenPrice** - what one action costs in tokens
 
 A pack carries a validity in months; the expiry date is frozen on the batch when
@@ -108,7 +109,10 @@ stored, so it can never go stale and expiry needs no scheduled task.
 ### Invariants to preserve
 
 - Every write goes through `WalletOperator::record()`, which takes a pessimistic
-  lock on the wallet and checks an idempotency key before mutating anything
+  lock on the wallet, then a locking read on `guiziweb_sylius_token_operation`
+  before mutating anything
+- An operation row is written only when the operation actually happened: a debit
+  refused for lack of balance leaves its key free for a later retry
 - Debits allocate batches oldest-expiring-first, and always re-read them **under**
   the lock: an entity loaded before the lock may be stale
 - `record()` settles expired batches under the lock before running the operation,
@@ -120,13 +124,6 @@ stored, so it can never go stale and expiry needs no scheduled task.
 ### Known limitations
 
 - Refunds do not take tokens back, this is left to a manual adjustment
-- `hasIdempotencyKey` is deliberately a plain read. Making it `FOR UPDATE` would
-  guard against a stale read view when `record()` runs inside an already-open
-  transaction (the Sylius payment bus does that), but MySQL then takes a gap lock
-  on `guiziweb_token_transaction_replay_idx` — a key space shared by every wallet.
-  Two customers paying at the same time deadlock on each other's insert intention,
-  which was measured and is far more frequent than the double webhook it would
-  protect against. The wallet lock already serialises writes on one wallet
 - `WalletProvider` reads then creates without a lock: two concurrent first
   purchases for the same customer both insert, and the loser hits the unique
   index on `customer_id`, which closes the EntityManager and loses that credit.
