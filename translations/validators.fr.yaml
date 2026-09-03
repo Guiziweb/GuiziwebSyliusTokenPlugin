@@ -1,0 +1,8 @@
+guiziweb_sylius_token:
+    product_variant:
+        token_pack_is_not_shippable: "Un pack de jetons est dématérialisé et ne peut pas exiger de livraison."
+    price:
+        code:
+            not_blank: 'Veuillez saisir le code du tarif.'
+            unique: 'Le code du tarif doit être unique.'
+            regex: 'Le code du tarif ne peut contenir que des lettres, des chiffres, des tirets et des traits de soulignement.'

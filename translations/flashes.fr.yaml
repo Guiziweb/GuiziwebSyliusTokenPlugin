@@ -1,0 +1,6 @@
+guiziweb_sylius_token:
+    flash:
+        credited: 'Les jetons ont été ajoutés au portefeuille.'
+        debited: 'Les jetons ont été retirés du portefeuille.'
+        wallet_without_customer: "Ce portefeuille n'appartient plus à un client et ne peut pas être ajusté."
+        insufficient_balance: 'Ce portefeuille ne contient pas assez de jetons.'

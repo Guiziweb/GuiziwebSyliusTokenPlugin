@@ -1,0 +1,58 @@
+guiziweb_sylius_token:
+    form:
+        adjustment:
+            direction: 'Opération'
+            amount: 'Jetons'
+            reason: 'Motif'
+            reason_help: "Conservé dans le registre pour que le mouvement reste explicable plus tard."
+        price:
+            cost: 'Coût en jetons'
+            cost_help: "Nombre de jetons consommés à chaque utilisation de cette action."
+        product_variant:
+            token_amount: 'Jetons accordés'
+            token_validity_months: 'Validité (mois)'
+            token_validity_months_help: "Laisser vide pour des jetons qui n'expirent jamais."
+    ui:
+        next_expiration: '%amount% jetons expirent le %date%'
+        validity_months: "{1}Valables un mois à compter de l'achat|]1,Inf[Valables %count% mois à compter de l'achat"
+        validity_years: "{1}Valables un an à compter de l'achat|]1,Inf[Valables %count% ans à compter de l'achat"
+        wallets: 'Portefeuilles de jetons'
+        tokens: 'Jetons'
+        history: 'Historique des jetons'
+        transactions: 'Historique des jetons'
+        total_credited: 'Total crédité'
+        total_expired: 'Total expiré'
+        total_spent: 'Total dépensé'
+        see_all: "Voir tout l'historique"
+        adjust: 'Ajuster le solde'
+        no_wallet: "Ce client n'a pas encore de jetons."
+        adjustment:
+            credit: 'Ajouter des jetons'
+            debit: 'Retirer des jetons'
+        token_products: 'Produits en jetons'
+        never_expires: "N'expire jamais"
+        token_pack: 'Pack de jetons'
+        new_token_pack: 'Nouveau pack de jetons'
+        edit_token_pack: 'Modifier le pack de jetons'
+        price: 'Tarif en jetons'
+        prices: 'Tarification en jetons'
+        create_pack: 'Créer'
+        my_tokens: 'Mes jetons'
+        balance: 'Jetons disponibles'
+        transaction:
+            type: 'Type'
+            amount: 'Jetons'
+            types:
+                credit: 'Crédit'
+                debit: 'Débit'
+                expiration: 'Expiration'
+        product_variant:
+            token_amount: 'Jetons'
+    menu:
+        header: 'Jetons'
+        products: 'Produits'
+        wallets: 'Portefeuilles'
+        pricing: 'Tarification'
+        shop:
+            account:
+                tokens: 'Mes jetons'

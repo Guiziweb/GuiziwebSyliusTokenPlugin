@@ -1,24 +1,27 @@
 guiziweb_sylius_token:
-    flash:
-        credited: 'Tokens have been added to the wallet.'
-        debited: 'Tokens have been removed from the wallet.'
-        insufficient_balance: 'This wallet does not hold enough tokens.'
     form:
         adjustment:
             direction: 'Operation'
             amount: 'Tokens'
             reason: 'Reason'
             reason_help: 'Kept in the ledger so the movement stays explainable later.'
-        tariff:
+        price:
             cost: 'Cost in tokens'
             cost_help: 'How many tokens one use of this action consumes.'
         product_variant:
             token_amount: 'Tokens granted'
+            token_validity_months: 'Validity (months)'
+            token_validity_months_help: 'Leave empty for tokens that never expire.'
     ui:
+        next_expiration: '%amount% tokens expire on %date%'
+        validity_months: '{1}Valid for one month from the purchase|]1,Inf[Valid for %count% months from the purchase'
+        validity_years: '{1}Valid for one year from the purchase|]1,Inf[Valid for %count% years from the purchase'
         wallets: 'Token wallets'
         tokens: 'Tokens'
         history: 'Token history'
+        transactions: 'Token history'
         total_credited: 'Total credited'
+        total_expired: 'Total expired'
         total_spent: 'Total spent'
         see_all: 'See full history'
         adjust: 'Adjust balance'
@@ -26,10 +29,13 @@ guiziweb_sylius_token:
         adjustment:
             credit: 'Add tokens'
             debit: 'Remove tokens'
-        token_products: 'Token packs'
-        tariff: 'Token tariff'
-        tariffs: 'Token tariffs'
-        tariffs_subheader: 'What each action costs in tokens'
+        token_products: 'Token products'
+        never_expires: 'Never expires'
+        token_pack: 'Token pack'
+        new_token_pack: 'New token pack'
+        edit_token_pack: 'Edit token pack'
+        price: 'Token price'
+        prices: 'Token pricing'
         create_pack: 'Create'
         my_tokens: 'My tokens'
         balance: 'Available tokens'
@@ -43,6 +49,10 @@ guiziweb_sylius_token:
         product_variant:
             token_amount: 'Tokens'
     menu:
+        header: 'Tokens'
+        products: 'Products'
+        wallets: 'Wallets'
+        pricing: 'Pricing'
         shop:
             account:
                 tokens: 'My tokens'

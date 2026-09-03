@@ -1,0 +1,8 @@
+guiziweb_sylius_token:
+    product_variant:
+        token_pack_is_not_shippable: 'A token pack is dematerialised and cannot require shipping.'
+    price:
+        code:
+            not_blank: 'Please enter price code.'
+            unique: 'Price code must be unique.'
+            regex: 'Price code can only be comprised of letters, numbers, dashes and underscores.'

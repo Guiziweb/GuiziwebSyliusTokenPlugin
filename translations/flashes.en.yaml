@@ -1,0 +1,6 @@
+guiziweb_sylius_token:
+    flash:
+        credited: 'Tokens have been added to the wallet.'
+        debited: 'Tokens have been removed from the wallet.'
+        wallet_without_customer: 'This wallet no longer belongs to a customer and cannot be adjusted.'
+        insufficient_balance: 'This wallet does not hold enough tokens.'
