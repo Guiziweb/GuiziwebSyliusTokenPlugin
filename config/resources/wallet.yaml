@@ -4,3 +4,4 @@ sylius_resource:
             driver: doctrine/orm
             classes:
                 model: Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWallet
+                repository: Guiziweb\SyliusTokenPlugin\Repository\TokenWalletRepository

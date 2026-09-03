@@ -5,6 +5,8 @@ sylius_grid:
                 name: doctrine/orm
                 options:
                     class: "%guiziweb_sylius_token.model.wallet.class%"
+                    repository:
+                        method: createListQueryBuilder
             sorting:
                 createdAt: desc
             limits: [10, 25, 50]
