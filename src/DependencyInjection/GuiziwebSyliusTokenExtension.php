@@ -9,23 +9,17 @@ use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceE
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 final class GuiziwebSyliusTokenExtension extends AbstractResourceExtension implements PrependExtensionInterface
 {
     use PrependDoctrineMigrationsTrait;
 
-    /** @psalm-suppress UnusedVariable */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $config = $this->processConfiguration($this->getConfiguration($configs, $container), $configs);
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
 
-        $container->setParameter('guiziweb_sylius_token.expiration.enabled', $config['expiration']['enabled']);
-        $container->setParameter('guiziweb_sylius_token.expiration.period', $config['expiration']['period']);
-
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
-
-        $loader->load('services.xml');
+        $loader->load('services.php');
     }
 
     public function prepend(ContainerBuilder $container): void
