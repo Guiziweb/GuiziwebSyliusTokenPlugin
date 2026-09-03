@@ -5,9 +5,20 @@
     "keywords": [
         "sylius",
         "sylius-plugin",
-        "test-appication"
+        "tokens",
+        "wallet",
+        "prepaid",
+        "credits",
+        "ledger"
     ],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Guiziweb",
+            "email": "guiziweb@gmail.com",
+            "homepage": "https://github.com/Guiziweb"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "sylius/sylius": "^2.0"
@@ -43,25 +54,6 @@
         "symfony/web-profiler-bundle": "^6.4 || ^7.4",
         "symfony/webpack-encore-bundle": "^2.2"
     },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": false,
-            "php-http/discovery": false,
-            "phpstan/extension-installer": true,
-            "symfony/flex": true,
-            "symfony/runtime": true
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        },
-        "symfony": {
-            "require": "^7.4"
-        },
-        "public-dir": "vendor/sylius/test-application/public"
-    },
     "autoload": {
         "psr-4": {
             "Guiziweb\\SyliusTokenPlugin\\": "src/"
@@ -73,6 +65,25 @@
                 "tests/",
                 "tests/TestApplication/src/"
             ]
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.1-dev"
+        },
+        "symfony": {
+            "require": "^7.4"
+        },
+        "public-dir": "vendor/sylius/test-application/public"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false,
+            "php-http/discovery": false,
+            "phpstan/extension-installer": true,
+            "symfony/flex": true,
+            "symfony/runtime": true
         }
     },
     "scripts": {
@@ -90,5 +101,7 @@
             "@database-reset",
             "@frontend-clear"
         ]
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
