@@ -106,6 +106,17 @@ final class TokenPackTraitTest extends TestCase
         self::assertSame([], $this->shippingViolations($variant));
     }
 
+    public function testAPackCannotGrantMoreTokensThanTheColumnHolds(): void
+    {
+        $variant = $this->createVariant();
+        $variant->setTokenAmount(self::MAX_INT);
+
+        $violations = $this->validator()->validate($variant, null, ['sylius']);
+
+        self::assertCount(1, $violations);
+        self::assertSame('sylius.max_integer', $violations->get(0)->getMessageTemplate());
+    }
+
     private function validator(): ValidatorInterface
     {
         return Validation::createValidatorBuilder()
