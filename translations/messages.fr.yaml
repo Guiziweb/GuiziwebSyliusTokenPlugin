@@ -19,6 +19,7 @@ guiziweb_sylius_token:
         wallets: 'Portefeuilles de jetons'
         tokens: 'Jetons'
         history: 'Historique des jetons'
+        transactions: 'Historique des jetons'
         total_credited: 'Total crédité'
         total_expired: 'Total expiré'
         total_spent: 'Total dépensé'
@@ -30,13 +31,17 @@ guiziweb_sylius_token:
             debit: 'Retirer des jetons'
         token_products: 'Produits en jetons'
         never_expires: "N'expire jamais"
+        token_pack: 'Pack de jetons'
         new_token_pack: 'Nouveau pack de jetons'
         edit_token_pack: 'Modifier le pack de jetons'
+        price: 'Tarif en jetons'
+        prices: 'Tarification en jetons'
         create_pack: 'Créer'
         my_tokens: 'Mes jetons'
         balance: 'Jetons disponibles'
         transaction:
             type: 'Type'
+            context: 'Détail'
             amount: 'Jetons'
             types:
                 credit: 'Crédit'
