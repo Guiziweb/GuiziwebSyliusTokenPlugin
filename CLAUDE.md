@@ -81,44 +81,55 @@ composer run test-app-init
 
 ## Architecture
 
-This is a **Sylius Plugin Skeleton** - a template for creating Sylius e-commerce plugins. It provides a complete development environment with both traditional and Docker setups.
+Prepaid token wallet for Sylius: customers buy token packs, tokens are credited on
+payment, and spent later against a price list.
 
-### Core Structure
-- **Main Plugin Class**: `src/AcmeSyliusExamplePlugin.php` - Entry point using `SyliusPluginTrait`
-- **DI Extension**: `src/DependencyInjection/AcmeSyliusExampleExtension.php` - Handles service loading and Doctrine migrations
-- **Services**: `config/services.xml` - Service definitions with XML configuration
-- **Routes**: `config/routes/` - Separate admin and shop route definitions
-- **Templates**: `templates/` - Twig templates for admin and shop with Twig hooks support
+### Core concepts
 
-### Key Features
-- **Test Application**: Uses `sylius/test-application` for plugin testing in isolation
-- **Asset Management**: Webpack Encore for frontend asset compilation
-- **Database**: Doctrine migrations with proper namespace handling
-- **Testing**: Full Behat + PHPUnit setup with browser testing support
-- **Code Quality**: PHPStan, ECS (Easy Coding Standard), and Rector integration
+- **TokenWallet** - one per customer, owns the batches
+- **TokenBatch** - tokens arrive in batches, each with its own acquisition date,
+  purchase price and optional expiry
+- **TokenTransaction** - append-only ledger, the source of truth
+- **TokenPrice** - what one action costs in tokens
 
-### Development Environment
-- **Docker**: Complete containerized environment with PHP, Node.js, and database
-- **Traditional**: Local Symfony server with manual dependency management
-- **Frontend**: Yarn-based asset pipeline through test application
+A pack carries a validity in months; the expiry date is frozen on the batch when
+the tokens are acquired. A balance is always derived from the batches, never
+stored, so it can never go stale and expiry needs no scheduled task.
 
-### Testing Strategy
-- **Unit/Integration**: PHPUnit for isolated component testing
-- **Functional**: Behat for feature testing with browser automation
-- **Static Analysis**: PHPStan for type checking and code quality
-- **Standards**: ECS for coding standard enforcement
+### Structure
 
-### Database Configuration
-Database credentials should be configured in:
-- `tests/TestApplication/.env` (for development)
-- `tests/TestApplication/.env.test` (for testing)
+- `src/Entity/` - persisted entities, one directory per entity with its interface
+- `src/Model/` - non persisted: contracts, traits and value objects
+- `src/Wallet/` - domain services (operator, allocator, consumer, provider)
+- `src/Factory/` - `TokenPackFactory` decorates `sylius.factory.product`
+- `config/services/` - one file per domain
+- `config/twig_hooks/` - hookables, mirroring the `templates/` tree
 
-## AI Development Guides
+### Invariants to preserve
 
-This project includes specialized AI guides to assist with common plugin development tasks:
+- Every write goes through `WalletOperator::record()`, which takes a pessimistic
+  lock on the wallet and checks an idempotency key before mutating anything
+- Debits allocate batches oldest-expiring-first, and always re-read them **under**
+  the lock: an entity loaded before the lock may be stale
+- `record()` settles expired batches under the lock before running the operation,
+  which is what keeps the ledger honest without a cron
+- A token pack is never shippable nor tracked; the factory sets it, a constraint
+  on `TokenPackTrait` enforces it
+- The ledger outlives its customer: `wallet.customer_id` is `ON DELETE SET NULL`
 
-- **CLEANUP_GUIDE.md** - Guidelines for cleaning up and organizing plugin code
-- **RENAME_GUIDE.md** - Step-by-step instructions for renaming plugins and components
-- **COMPATIBILITY_GUIDE.md** - Best practices for maintaining compatibility across different Sylius versions
+### Known limitations
 
-These guides provide detailed instructions and automated workflows to help maintain code quality and ensure proper plugin structure.
+- Refunds do not take tokens back, this is left to a manual adjustment
+- `hasIdempotencyKey` is deliberately a plain read. Making it `FOR UPDATE` would
+  guard against a stale read view when `record()` runs inside an already-open
+  transaction (the Sylius payment bus does that), but MySQL then takes a gap lock
+  on `guiziweb_token_transaction_replay_idx` — a key space shared by every wallet.
+  Two customers paying at the same time deadlock on each other's insert intention,
+  which was measured and is far more frequent than the double webhook it would
+  protect against. The wallet lock already serialises writes on one wallet
+- `WalletProvider` reads then creates without a lock: two concurrent first
+  purchases for the same customer both insert, and the loser hits the unique
+  index on `customer_id`, which closes the EntityManager and loses that credit.
+  The window is a few milliseconds on a customer's very first purchase, and the
+  PSP retrying its webhook recovers it. Locking is not an option here: `lock()`
+  needs an open transaction, and there is no row to lock yet.

@@ -8,122 +8,55 @@
     </a>
 </p>
 
-<h1 align="center">Plugin Skeleton</h1>
+<h1 align="center">Sylius Token Plugin</h1>
 
-<p align="center">Skeleton for starting Sylius plugins.</p>
+<p align="center">
+    <a href="https://github.com/Guiziweb/GuiziwebSyliusTokenPlugin/actions"><img src="https://img.shields.io/github/actions/workflow/status/Guiziweb/GuiziwebSyliusTokenPlugin/build.yaml?branch=main" alt="Build status"></a>
+    <a href="https://packagist.org/packages/guiziweb/sylius-token-plugin"><img src="https://img.shields.io/packagist/v/guiziweb/sylius-token-plugin" alt="Latest version"></a>
+    <a href="https://packagist.org/packages/guiziweb/sylius-token-plugin"><img src="https://img.shields.io/packagist/php-v/guiziweb/sylius-token-plugin" alt="PHP version"></a>
+    <img src="https://img.shields.io/badge/phpunit-passing-success" alt="PHPUnit">
+    <img src="https://img.shields.io/badge/behat-passing-success" alt="Behat">
+    <img src="https://img.shields.io/badge/phpstan-level%20max-blue" alt="PHPStan max">
+    <img src="https://img.shields.io/badge/ecs-passing-success" alt="ECS">
+    <a href="https://packagist.org/packages/guiziweb/sylius-token-plugin"><img src="https://img.shields.io/packagist/l/guiziweb/sylius-token-plugin" alt="License"></a>
+</p>
+
+> **Buy tokens, spend them on anything.** Prepaid wallet for Sylius, the way AI SaaS products bill their users.
+
+## How it works
+
+Customers buy **token packs**: ordinary Sylius products that grant tokens instead of being shipped. Tokens land in a **wallet** when the payment completes, and your own code spends them against a **price list** that says what each action costs.
+
+```php
+$this->tokenConsumer->consume($customer, $price, 'image-generation-4521');
+```
+
+Every movement is written to an append-only ledger. Tokens are held in batches, each with its own acquisition date, purchase price and optional expiry, and spent oldest-expiring-first. A balance is always derived from those batches, so an expired batch stops counting the moment it expires.
+
+## Requirements
+
+- PHP ^8.2
+- Sylius ^2.0
+- MySQL, MariaDB or PostgreSQL
+
+## Install
+
+```bash
+composer require guiziweb/sylius-token-plugin
+```
+
+Then register the bundle, import the configuration and the routes, apply the
+plugin trait to your `ProductVariant`, and run the migrations. The five steps are
+in [installation](docs/installation.md) — none of them can be skipped: without the
+trait a product cannot grant tokens, and without the imports the application will
+not boot.
 
 ## Documentation
 
-For a comprehensive guide on Sylius Plugins development please go to Sylius documentation,
-there you will find the <a href="https://docs.sylius.com/plugins-development-guide/how-to-create-a-plugin-for-sylius">Plugin Development Guide</a> - it's a great place to start.
+- [Installation](docs/installation.md) - full setup steps
+- [Usage](docs/usage.md) - selling packs, spending tokens, adjusting balances
+- [Extending](docs/extending.md) - expiration policy, overriding models
 
-For more information about the **Test Application** included in the skeleton, please refer to the [Sylius documentation](https://docs.sylius.com/plugins-development-guide/test-application).
+## License
 
-## Quickstart Installation
-
-Run `composer create-project sylius/plugin-skeleton ProjectName`.
-
-### Traditional
-
-1. From the plugin skeleton root directory, run the following commands:
-
-    ```bash
-    (cd vendor/sylius/test-application && yarn install)
-    (cd vendor/sylius/test-application && yarn build)
-    vendor/bin/console assets:install
-   
-    vendor/bin/console doctrine:database:create
-    vendor/bin/console doctrine:migrations:migrate -n
-    # Optionally load data fixtures
-    vendor/bin/console sylius:fixtures:load -n
-    ```
-
-To be able to set up a plugin's database, remember to configure your database credentials in `tests/TestApplication/.env` and `tests/TestApplication/.env.test`.
-
-2. Run your local server:
-
-      ```bash
-      symfony server:ca:install
-      symfony server:start -d
-      ```
-
-3. Open your browser and navigate to `https://localhost:8000`.
-
-### Docker
-
-1. Execute `make init` to initialize the container and install the dependencies.
-
-2. Execute `make database-init` to create the database and run migrations.
-
-3. (Optional) Execute `make load-fixtures` to load the fixtures.
-
-4. Your app is available at `http://localhost`.
-
-## Usage
-
-### Running plugin tests
-
-  - PHPUnit
-
-    ```bash
-    vendor/bin/phpunit
-    ```
-
-  - Behat (non-JS scenarios)
-
-    ```bash
-    vendor/bin/behat --strict --tags="~@javascript&&~@mink:chromedriver"
-    ```
-
-  - Behat (JS scenarios)
- 
-    1. [Install Symfony CLI command](https://symfony.com/download).
- 
-    2. Start Headless Chrome:
-    
-      ```bash
-      google-chrome-stable --enable-automation --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --allow-insecure-localhost --disable-translate --disable-extensions --no-sandbox --enable-features=Metal --headless --remote-debugging-port=9222 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' http://127.0.0.1
-      ```
-    
-    3. Install SSL certificates (only once needed) and run test application's webserver on `127.0.0.1:8080`:
-    
-      ```bash
-      symfony server:ca:install
-      APP_ENV=test symfony server:start --port=8080 --daemon
-      ```
-    
-    4. Run Behat:
-    
-      ```bash
-      vendor/bin/behat --strict --tags="@javascript,@mink:chromedriver"
-      ```
-    
-  - Static Analysis
-      
-    - PHPStan
-    
-      ```bash
-      vendor/bin/phpstan analyse -c phpstan.neon -l max src/  
-      ```
-
-  - Coding Standard
-  
-    ```bash
-    vendor/bin/ecs check
-    ```
-
-### Opening Sylius with your plugin
-
-- Using `test` environment:
-
-    ```bash
-    APP_ENV=test vendor/bin/console sylius:fixtures:load -n
-    APP_ENV=test symfony server:start -d
-    ```
-    
-- Using `dev` environment:
-
-    ```bash
-    vendor/bin/console sylius:fixtures:load -n
-    symfony server:start -d
-    ```
+MIT - see [LICENSE](LICENSE).
