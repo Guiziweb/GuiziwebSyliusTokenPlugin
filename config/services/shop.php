@@ -26,6 +26,7 @@ return static function (ContainerConfigurator $container): void {
             service('clock'),
         ])
         ->tag('twig.runtime')
+        ->tag('kernel.reset', ['method' => 'reset'])
     ;
 
     $services->set('guiziweb_sylius_token.twig.extension.token_balance', TokenBalanceExtension::class)

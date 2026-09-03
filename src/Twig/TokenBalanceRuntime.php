@@ -12,9 +12,10 @@ use Psr\Clock\ClockInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Customer\Context\CustomerContextInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
+use Symfony\Contracts\Service\ResetInterface;
 use Twig\Extension\RuntimeExtensionInterface;
 
-final class TokenBalanceRuntime implements RuntimeExtensionInterface
+final class TokenBalanceRuntime implements RuntimeExtensionInterface, ResetInterface
 {
     private ?int $balance = null;
 
@@ -61,5 +62,11 @@ final class TokenBalanceRuntime implements RuntimeExtensionInterface
         }
 
         return $this->balance;
+    }
+
+    public function reset(): void
+    {
+        $this->balance = null;
+        $this->resolved = false;
     }
 }
