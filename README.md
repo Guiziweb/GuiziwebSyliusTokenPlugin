@@ -39,17 +39,24 @@ Every movement is written to an append-only ledger. Tokens are held in batches, 
 - Sylius ^2.0
 - MySQL, MariaDB or PostgreSQL
 
-## Install
+## Quick install
+
+This plugin ships a [Symfony Flex recipe](https://github.com/Guiziweb/SyliusRecipes). With the Guiziweb recipe endpoint configured in your project (see linked repo), the install boils down to:
 
 ```bash
 composer require guiziweb/sylius-token-plugin
 ```
 
-Then register the bundle, import the configuration and the routes, apply the
-plugin trait to your `ProductVariant`, and run the migrations. The six steps are
-in [installation](docs/installation.md) — none of them can be skipped: without the
-trait the admin product screens break, and without the imports the application
-will not boot.
+The recipe registers the bundle and imports the configuration and the routes. One
+step cannot be automated: apply `TokenPackTrait` to your own `ProductVariant`
+entity, since a pack grants tokens through a field carried by your entity. Do it
+before running the migrations:
+
+```bash
+bin/console doctrine:migrations:migrate
+```
+
+Full step-by-step guide (with and without Flex): [installation](docs/installation.md).
 
 ## Documentation
 
