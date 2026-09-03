@@ -14,19 +14,20 @@ class TokenTransactionRepository extends EntityRepository implements TokenTransa
 {
     public function hasIdempotencyKey(TokenWalletInterface $wallet, string $idempotencyKey, TokenTransactionType $type): bool
     {
-        $count = $this->createQueryBuilder('o')
-            ->select('COUNT(o.id)')
+        $existing = $this->createQueryBuilder('o')
+            ->select('o.id')
             ->andWhere('o.wallet = :wallet')
             ->andWhere('o.idempotencyKey = :idempotencyKey')
             ->andWhere('o.type = :type')
             ->setParameter('wallet', $wallet)
             ->setParameter('idempotencyKey', $idempotencyKey)
             ->setParameter('type', $type->value)
+            ->setMaxResults(1)
             ->getQuery()
-            ->getSingleScalarResult()
+            ->getOneOrNullResult()
         ;
 
-        return ((int) $count) > 0;
+        return null !== $existing;
     }
 
     public function createByCustomerQueryBuilder(CustomerInterface $customer): QueryBuilder

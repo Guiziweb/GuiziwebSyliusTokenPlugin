@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Guiziweb\SyliusTokenPlugin\Fixture;
 
 use Doctrine\Persistence\ObjectManager;
-use Guiziweb\SyliusTokenPlugin\Entity\TokenTariff\TokenTariffInterface;
-use Guiziweb\SyliusTokenPlugin\Product\TokenPackInterface;
+use Guiziweb\SyliusTokenPlugin\Entity\TokenPrice\TokenPriceInterface;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenPackFactory;
+use Guiziweb\SyliusTokenPlugin\Model\TokenPackInterface;
 use Sylius\Bundle\FixturesBundle\Fixture\AbstractFixture;
 use Sylius\Component\Core\Formatter\StringInflector;
 use Sylius\Component\Core\Model\ChannelInterface;
@@ -21,23 +22,20 @@ use Webmozart\Assert\Assert;
 final class TokenFixture extends AbstractFixture
 {
     /**
-     * @param FactoryInterface<ProductInterface> $productFactory
-     * @param FactoryInterface<ProductVariantInterface> $productVariantFactory
      * @param FactoryInterface<ChannelPricingInterface> $channelPricingFactory
      * @param RepositoryInterface<ChannelInterface> $channelRepository
      * @param RepositoryInterface<ProductInterface> $productRepository
-     * @param FactoryInterface<TokenTariffInterface> $tariffFactory
-     * @param RepositoryInterface<TokenTariffInterface> $tariffRepository
+     * @param FactoryInterface<TokenPriceInterface> $priceFactory
+     * @param RepositoryInterface<TokenPriceInterface> $priceRepository
      */
     public function __construct(
         private readonly ObjectManager $objectManager,
-        private readonly FactoryInterface $productFactory,
-        private readonly FactoryInterface $productVariantFactory,
+        private readonly TokenPackFactory $productFactory,
         private readonly FactoryInterface $channelPricingFactory,
         private readonly RepositoryInterface $channelRepository,
         private readonly RepositoryInterface $productRepository,
-        private readonly FactoryInterface $tariffFactory,
-        private readonly RepositoryInterface $tariffRepository,
+        private readonly FactoryInterface $priceFactory,
+        private readonly RepositoryInterface $priceRepository,
     ) {
     }
 
@@ -49,7 +47,7 @@ final class TokenFixture extends AbstractFixture
     /**
      * @param array{
      *     packs: array<int, array{name: string, tokens: int, price: int}>,
-     *     tariffs: array<int, array{code: string, name: string, cost: int}>
+     *     prices: array<int, array{code: string, name: string, cost: int}>
      * } $options
      */
     public function load(array $options): void
@@ -61,8 +59,8 @@ final class TokenFixture extends AbstractFixture
             $this->createProduct($pack['name'], $pack['price'], $channels, tokenAmount: $pack['tokens']);
         }
 
-        foreach ($options['tariffs'] as $tariff) {
-            $this->createTariff($tariff['code'], $tariff['name'], $tariff['cost']);
+        foreach ($options['prices'] as $price) {
+            $this->createPrice($price['code'], $price['name'], $price['cost']);
         }
 
         $this->objectManager->flush();
@@ -86,7 +84,7 @@ final class TokenFixture extends AbstractFixture
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('tariffs')
+                ->arrayNode('prices')
                     ->defaultValue([
                         ['code' => 'cv_generation', 'name' => 'CV generation', 'cost' => 5],
                         ['code' => 'hd_image', 'name' => 'HD image generation', 'cost' => 20],
@@ -103,19 +101,19 @@ final class TokenFixture extends AbstractFixture
         ;
     }
 
-    private function createTariff(string $code, string $name, int $cost): void
+    private function createPrice(string $code, string $name, int $cost): void
     {
-        if (null !== $this->tariffRepository->findOneBy(['code' => $code])) {
+        if (null !== $this->priceRepository->findOneBy(['code' => $code])) {
             return;
         }
 
-        $tariff = $this->tariffFactory->createNew();
-        $tariff->setCode($code);
-        $tariff->setName($name);
-        $tariff->setCost($cost);
-        $tariff->setEnabled(true);
+        $price = $this->priceFactory->createNew();
+        $price->setCode($code);
+        $price->setName($name);
+        $price->setCost($cost);
+        $price->setEnabled(true);
 
-        $this->objectManager->persist($tariff);
+        $this->objectManager->persist($price);
     }
 
     /** @param array<int, ChannelInterface> $channels */
@@ -131,7 +129,7 @@ final class TokenFixture extends AbstractFixture
             return;
         }
 
-        $product = $this->productFactory->createNew();
+        $product = $this->productFactory->createTokenPack();
         $product->setCode($code);
         $product->setEnabled(true);
         $product->setCurrentLocale('en_US');
@@ -143,15 +141,14 @@ final class TokenFixture extends AbstractFixture
             $product->addChannel($channel);
         }
 
-        $variant = $this->productVariantFactory->createNew();
+        $variant = $product->getVariants()->first();
         Assert::isInstanceOf($variant, TokenPackInterface::class, 'Apply TokenPackTrait to your ProductVariant entity.');
+        Assert::isInstanceOf($variant, ProductVariantInterface::class);
 
         $variant->setCode($code . '_VARIANT');
         $variant->setCurrentLocale('en_US');
         $variant->setFallbackLocale('en_US');
         $variant->setName($name);
-        $variant->setShippingRequired(false);
-        $variant->setTracked(false);
         $variant->setTokenAmount($tokenAmount);
 
         foreach ($channels as $channel) {
@@ -161,7 +158,6 @@ final class TokenFixture extends AbstractFixture
             $variant->addChannelPricing($channelPricing);
         }
 
-        $product->addVariant($variant);
         $this->objectManager->persist($product);
     }
 }

@@ -11,7 +11,6 @@ use Sylius\Component\Core\Model\OrderInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'guiziweb_sylius_token_transaction')]
-#[ORM\Index(columns: ['wallet_id', 'created_at'], name: 'guiziweb_token_transaction_history_idx')]
 #[ORM\UniqueConstraint(name: 'guiziweb_token_transaction_replay_idx', columns: ['idempotency_key', 'type', 'batch_id'])]
 class TokenTransaction implements TokenTransactionInterface
 {

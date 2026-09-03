@@ -13,13 +13,14 @@ use Guiziweb\SyliusTokenPlugin\Entity\TokenTransaction\TokenTransaction;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenTransaction\TokenTransactionType;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
 use Guiziweb\SyliusTokenPlugin\Exception\InsufficientTokenBalanceException;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenBatchFactory;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenTransactionFactory;
 use Guiziweb\SyliusTokenPlugin\Model\PurchasePrice;
 use Guiziweb\SyliusTokenPlugin\Repository\TokenBatchRepositoryInterface;
 use Guiziweb\SyliusTokenPlugin\Repository\TokenTransactionRepositoryInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\BatchAllocator;
-use Guiziweb\SyliusTokenPlugin\Wallet\ExpirationDateResolver;
-use Guiziweb\SyliusTokenPlugin\Wallet\TokenCredit;
-use Guiziweb\SyliusTokenPlugin\Wallet\TokenDebit;
+use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
+use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -155,20 +156,9 @@ final class WalletOperatorTest extends TestCase
         self::assertSame(50, $batch->getRemainingAmount());
     }
 
-    public function testItAppliesTheConfiguredExpirationPolicyToNewBatches(): void
+    public function testItCarriesTheGivenExpirationDateOntoTheBatch(): void
     {
-        $batch = $this->createOperator(expirationEnabled: true)
-            ->credit($this->wallet, new TokenCredit(100, 'order-1'))
-        ;
-
-        self::assertNotNull($batch);
-        self::assertNotNull($batch->getExpiresAt());
-        self::assertSame('2027-03-01 12:00:00', $batch->getExpiresAt()->format('Y-m-d H:i:s'));
-    }
-
-    public function testAnExplicitExpirationDateWinsOverTheConfiguredPolicy(): void
-    {
-        $batch = $this->createOperator(expirationEnabled: true)->credit(
+        $batch = $this->createOperator()->credit(
             $this->wallet,
             new TokenCredit(100, 'order-1', expiresAt: new \DateTimeImmutable('2026-06-01 12:00:00')),
         );
@@ -176,6 +166,14 @@ final class WalletOperatorTest extends TestCase
         self::assertNotNull($batch);
         self::assertNotNull($batch->getExpiresAt());
         self::assertSame('2026-06-01 12:00:00', $batch->getExpiresAt()->format('Y-m-d H:i:s'));
+    }
+
+    public function testABatchNeverExpiresWhenNoDateIsGiven(): void
+    {
+        $batch = $this->createOperator()->credit($this->wallet, new TokenCredit(100, 'order-1'));
+
+        self::assertNotNull($batch);
+        self::assertNull($batch->getExpiresAt());
     }
 
     public function testAnInsufficientBalanceDoesNotAbortTheTransaction(): void
@@ -209,15 +207,16 @@ final class WalletOperatorTest extends TestCase
         }
     }
 
-    private function createOperator(bool $expirationEnabled = false): WalletOperator
+    private function createOperator(): WalletOperator
     {
         return new WalletOperator(
             $this->entityManager,
             $this->batchRepository,
             $this->transactionRepository,
             new BatchAllocator(),
-            new ExpirationDateResolver($expirationEnabled, 'P1Y'),
             new MockClock(new \DateTimeImmutable(self::NOW)),
+            new TokenBatchFactory(TokenBatch::class),
+            new TokenTransactionFactory(TokenTransaction::class),
         );
     }
 

@@ -7,9 +7,9 @@ namespace Tests\Guiziweb\SyliusTokenPlugin\Unit\Wallet;
 use Doctrine\Common\Collections\ArrayCollection;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
 use Guiziweb\SyliusTokenPlugin\Model\PurchasePrice;
-use Guiziweb\SyliusTokenPlugin\Product\TokenPackInterface;
+use Guiziweb\SyliusTokenPlugin\Model\TokenPackInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\OrderTokenCreditor;
-use Guiziweb\SyliusTokenPlugin\Wallet\TokenCredit;
+use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperatorInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletProviderInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -18,9 +18,12 @@ use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
+use Symfony\Component\Clock\MockClock;
 
 final class OrderTokenCreditorTest extends TestCase
 {
+    private const NOW = '2026-03-01 12:00:00';
+
     private WalletProviderInterface&MockObject $walletProvider;
 
     private WalletOperatorInterface&MockObject $walletOperator;
@@ -47,6 +50,43 @@ final class OrderTokenCreditorTest extends TestCase
                 self::assertSame('order-item-7', $credit->idempotencyKey);
                 self::assertSame($order, $credit->order);
                 self::assertEquals(new PurchasePrice(12000, 'EUR'), $credit->price);
+
+                return true;
+            }))
+        ;
+
+        $this->createCreditor()->credit($order);
+    }
+
+    public function testItCarriesThePackValidityOntoTheCredit(): void
+    {
+        $order = $this->createOrder([
+            $this->createTokenPackItem(id: 7, tokenAmount: 500, quantity: 1, total: 4000, validityMonths: 6),
+        ]);
+
+        $this->walletOperator
+            ->expects(self::once())
+            ->method('credit')
+            ->with($this->wallet, self::callback(function (TokenCredit $credit): bool {
+                self::assertNotNull($credit->expiresAt);
+                self::assertSame('2026-09-01 12:00:00', $credit->expiresAt->format('Y-m-d H:i:s'));
+
+                return true;
+            }))
+        ;
+
+        $this->createCreditor()->credit($order);
+    }
+
+    public function testAPackWithoutValidityCreditsTokensThatNeverExpire(): void
+    {
+        $order = $this->createOrder([$this->createTokenPackItem(id: 7, tokenAmount: 500, quantity: 1, total: 4000)]);
+
+        $this->walletOperator
+            ->expects(self::once())
+            ->method('credit')
+            ->with($this->wallet, self::callback(function (TokenCredit $credit): bool {
+                self::assertNull($credit->expiresAt);
 
                 return true;
             }))
@@ -92,7 +132,11 @@ final class OrderTokenCreditorTest extends TestCase
 
     private function createCreditor(): OrderTokenCreditor
     {
-        return new OrderTokenCreditor($this->walletProvider, $this->walletOperator);
+        return new OrderTokenCreditor(
+            $this->walletProvider,
+            $this->walletOperator,
+            new MockClock(new \DateTimeImmutable(self::NOW)),
+        );
     }
 
     /** @param array<int, OrderItemInterface> $items */
@@ -108,11 +152,17 @@ final class OrderTokenCreditorTest extends TestCase
         return $order;
     }
 
-    private function createTokenPackItem(int $id, int $tokenAmount, int $quantity, int $total): OrderItemInterface
+    private function createTokenPackItem(int $id, int $tokenAmount, int $quantity, int $total, ?int $validityMonths = null): OrderItemInterface
     {
         $variant = $this->createMockForIntersectionOfInterfaces([ProductVariantInterface::class, TokenPackInterface::class]);
         $variant->method('isTokenPack')->willReturn(true);
         $variant->method('getTokenAmount')->willReturn($tokenAmount);
+        $variant->method('getTokenValidityMonths')->willReturn($validityMonths);
+        $variant->method('resolveExpirationDate')->willReturnCallback(
+            static fn (\DateTimeImmutable $acquiredAt): ?\DateTimeImmutable => null === $validityMonths
+                ? null
+                : $acquiredAt->add(new \DateInterval(sprintf('P%dM', $validityMonths))),
+        );
 
         $item = $this->createMock(OrderItemInterface::class);
         $item->method('getId')->willReturn($id);

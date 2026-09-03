@@ -7,24 +7,15 @@ namespace Guiziweb\SyliusTokenPlugin\Wallet;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatchInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
 use Guiziweb\SyliusTokenPlugin\Exception\InsufficientTokenBalanceException;
+use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
+use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
 
 interface WalletOperatorInterface
 {
     public function credit(TokenWalletInterface $wallet, TokenCredit $credit): ?TokenBatchInterface;
 
-    /**
-     * @throws InsufficientTokenBalanceException
-     */
+    /** @throws InsufficientTokenBalanceException */
     public function debit(TokenWalletInterface $wallet, TokenDebit $debit): void;
 
     public function getBalance(TokenWalletInterface $wallet): int;
-
-    public function recalculateBalance(TokenWalletInterface $wallet): int;
-
-    /**
-     * Empties an expired batch and records the movement.
-     *
-     * @return int the number of tokens that were expired
-     */
-    public function expireBatch(TokenBatchInterface $batch): int;
 }

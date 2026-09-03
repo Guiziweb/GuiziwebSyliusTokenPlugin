@@ -28,8 +28,6 @@ interface TokenBatchInterface extends ResourceInterface
 
     public function isExpiredAt(\DateTimeInterface $date): bool;
 
-    /**
-     * @throws \InvalidArgumentException when the batch does not hold enough tokens
-     */
+    /** @throws \InvalidArgumentException when the batch does not hold enough tokens */
     public function deduct(int $amount): void;
 }

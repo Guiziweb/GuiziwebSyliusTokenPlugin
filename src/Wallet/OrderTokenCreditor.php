@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Guiziweb\SyliusTokenPlugin\Wallet;
 
 use Guiziweb\SyliusTokenPlugin\Model\PurchasePrice;
-use Guiziweb\SyliusTokenPlugin\Product\TokenPackInterface;
+use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
+use Guiziweb\SyliusTokenPlugin\Model\TokenPackInterface;
+use Psr\Clock\ClockInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
@@ -16,6 +18,7 @@ final readonly class OrderTokenCreditor implements OrderTokenCreditorInterface
     public function __construct(
         private WalletProviderInterface $walletProvider,
         private WalletOperatorInterface $walletOperator,
+        private ClockInterface $clock,
     ) {
     }
 
@@ -45,8 +48,20 @@ final readonly class OrderTokenCreditor implements OrderTokenCreditorInterface
                 idempotencyKey: sprintf('order-item-%s', (string) $item->getId()),
                 order: $order,
                 price: $this->pricePaid($item, $order),
+                expiresAt: $this->expirationOf($item),
             ));
         }
+    }
+
+    private function expirationOf(OrderItemInterface $item): ?\DateTimeImmutable
+    {
+        $variant = $item->getVariant();
+
+        if (!$variant instanceof TokenPackInterface) {
+            return null;
+        }
+
+        return $variant->resolveExpirationDate($this->clock->now());
     }
 
     private function tokensBought(OrderItemInterface $item): ?int

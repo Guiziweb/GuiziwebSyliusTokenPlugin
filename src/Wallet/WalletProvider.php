@@ -5,21 +5,20 @@ declare(strict_types=1);
 namespace Guiziweb\SyliusTokenPlugin\Wallet;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWallet;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenWalletFactoryInterface;
 use Psr\Clock\ClockInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
 final readonly class WalletProvider implements WalletProviderInterface
 {
-    /**
-     * @param RepositoryInterface<TokenWalletInterface> $walletRepository
-     */
+    /** @param RepositoryInterface<TokenWalletInterface> $walletRepository */
     public function __construct(
         private RepositoryInterface $walletRepository,
         private EntityManagerInterface $entityManager,
         private ClockInterface $clock,
+        private TokenWalletFactoryInterface $walletFactory,
     ) {
     }
 
@@ -31,7 +30,7 @@ final readonly class WalletProvider implements WalletProviderInterface
             return $wallet;
         }
 
-        $wallet = new TokenWallet($this->clock->now());
+        $wallet = $this->walletFactory->createNew($this->clock->now());
         $wallet->setCustomer($customer);
         $this->entityManager->persist($wallet);
 

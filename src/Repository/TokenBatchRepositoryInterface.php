@@ -9,17 +9,13 @@ use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
 
 interface TokenBatchRepositoryInterface
 {
-    /**
-     * @return array<int, TokenBatchInterface>
-     */
+    /** @return array<int, TokenBatchInterface> */
     public function findAvailable(TokenWalletInterface $wallet, \DateTimeInterface $at): array;
+
+    public function findNextExpiring(TokenWalletInterface $wallet, \DateTimeInterface $at): ?TokenBatchInterface;
 
     public function getBalance(TokenWalletInterface $wallet, \DateTimeInterface $at): int;
 
-    /**
-     * Batches whose expiration date has passed but that still hold tokens.
-     *
-     * @return array<int, TokenBatchInterface>
-     */
-    public function findExpired(\DateTimeInterface $at): array;
+    /** @return array<int, TokenBatchInterface> */
+    public function findExpiredForWallet(TokenWalletInterface $wallet, \DateTimeInterface $at): array;
 }
