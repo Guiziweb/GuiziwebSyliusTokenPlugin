@@ -28,6 +28,7 @@ final readonly class TokenConsumer implements TokenConsumerInterface
             new TokenDebit(
                 amount: $this->cost($price, $quantity),
                 idempotencyKey: $reference,
+                reason: $price->getName() ?? $price->getCode(),
             ),
         );
     }

@@ -42,6 +42,7 @@ final class TokenConsumerTest extends TestCase
             ->with($this->wallet, self::callback(static function (TokenDebit $debit): bool {
                 self::assertSame(15, $debit->amount);
                 self::assertSame('cv-4521', $debit->idempotencyKey);
+                self::assertSame('Image generation', $debit->reason);
 
                 return true;
             }))
@@ -86,12 +87,29 @@ final class TokenConsumerTest extends TestCase
         return new TokenConsumer($this->walletRepository, $provider, $this->walletOperator);
     }
 
-    private function createPrice(int $cost, bool $enabled = true): TokenPriceInterface
+    private function createPrice(int $cost, bool $enabled = true, ?string $name = 'Image generation'): TokenPriceInterface
     {
         $price = $this->createMock(TokenPriceInterface::class);
         $price->method('getCost')->willReturn($cost);
         $price->method('isEnabled')->willReturn($enabled);
+        $price->method('getName')->willReturn($name);
+        $price->method('getCode')->willReturn('image-generation');
 
         return $price;
+    }
+
+    public function testItFallsBackToTheCodeWhenThePriceHasNoName(): void
+    {
+        $this->walletOperator
+            ->expects(self::once())
+            ->method('debit')
+            ->with($this->wallet, self::callback(static function (TokenDebit $debit): bool {
+                self::assertSame('image-generation', $debit->reason);
+
+                return true;
+            }))
+        ;
+
+        $this->createConsumer()->consume($this->customer, $this->createPrice(5, true, null), 'cv-4522');
     }
 }
