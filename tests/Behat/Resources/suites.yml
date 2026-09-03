@@ -31,6 +31,7 @@ default:
                 - sylius.behat.context.setup.payment
                 - sylius.behat.context.setup.product
                 - sylius.behat.context.setup.shipping
+                - sylius.behat.context.setup.admin_security
                 - sylius.behat.context.setup.shop_security
                 - sylius.behat.context.setup.taxation
                 - sylius.behat.context.setup.user
@@ -45,7 +46,12 @@ default:
                 - sylius.behat.context.ui.user
 
                 - guiziweb_sylius_token.behat.context.setup.token
+                - guiziweb_sylius_token.behat.context.ui.admin.adjusting_token_balance
+                - guiziweb_sylius_token.behat.context.ui.admin.browsing_token_history
+                - guiziweb_sylius_token.behat.context.ui.admin.creating_token_pack
+                - guiziweb_sylius_token.behat.context.ui.admin.managing_token_prices
                 - guiziweb_sylius_token.behat.context.ui.shop.token_balance
+                - guiziweb_sylius_token.behat.context.ui.shop.token_history
 
             filters:
                 tags: "@managing_tokens"
