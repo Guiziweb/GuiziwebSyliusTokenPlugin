@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Guiziweb\SyliusTokenPlugin\Wallet;
 
 use Guiziweb\SyliusTokenPlugin\Exception\InsufficientTokenBalanceException;
+use Guiziweb\SyliusTokenPlugin\Model\BatchAllocation;
 
 final class BatchAllocator implements BatchAllocatorInterface
 {

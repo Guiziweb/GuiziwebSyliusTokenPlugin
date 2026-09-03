@@ -6,6 +6,7 @@ namespace Guiziweb\SyliusTokenPlugin\Wallet;
 
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatchInterface;
 use Guiziweb\SyliusTokenPlugin\Exception\InsufficientTokenBalanceException;
+use Guiziweb\SyliusTokenPlugin\Model\BatchAllocation;
 
 interface BatchAllocatorInterface
 {

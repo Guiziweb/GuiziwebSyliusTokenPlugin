@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Guiziweb\SyliusTokenPlugin\Entity\Product;
 
 use Doctrine\ORM\Mapping as ORM;
-use Guiziweb\SyliusTokenPlugin\Product\TokenPackInterface;
-use Guiziweb\SyliusTokenPlugin\Product\TokenPackTrait;
+use Guiziweb\SyliusTokenPlugin\Model\TokenPackInterface;
+use Guiziweb\SyliusTokenPlugin\Model\TokenPackTrait;
 use Sylius\Component\Core\Model\ProductVariant as BaseProductVariant;
 
 #[ORM\Entity]

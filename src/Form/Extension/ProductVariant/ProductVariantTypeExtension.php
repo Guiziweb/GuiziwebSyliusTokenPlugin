@@ -17,6 +17,12 @@ final class ProductVariantTypeExtension extends AbstractTypeExtension
             'label' => 'guiziweb_sylius_token.form.product_variant.token_amount',
             'required' => false,
         ]);
+
+        $builder->add('tokenValidityMonths', IntegerType::class, [
+            'label' => 'guiziweb_sylius_token.form.product_variant.token_validity_months',
+            'help' => 'guiziweb_sylius_token.form.product_variant.token_validity_months_help',
+            'required' => false,
+        ]);
     }
 
     public static function getExtendedTypes(): iterable

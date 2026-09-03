@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Guiziweb\SyliusTokenPlugin\Wallet;
+namespace Guiziweb\SyliusTokenPlugin\Model;
 
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatchInterface;
 

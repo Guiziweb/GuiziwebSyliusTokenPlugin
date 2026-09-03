@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Guiziweb\SyliusTokenPlugin\Wallet;
+namespace Guiziweb\SyliusTokenPlugin\Model;
 
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatchOrigin;
-use Guiziweb\SyliusTokenPlugin\Model\PurchasePrice;
 use Sylius\Component\Core\Model\OrderInterface;
 
 final readonly class TokenCredit
