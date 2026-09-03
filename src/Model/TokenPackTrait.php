@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Guiziweb\SyliusTokenPlugin\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sylius\Bundle\CoreBundle\Validator\Constraints\MaxInteger;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -12,6 +13,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 trait TokenPackTrait
 {
     #[Assert\Positive(groups: ['sylius'])]
+    #[MaxInteger(groups: ['sylius'])]
     #[ORM\Column(name: 'token_amount', type: 'integer', nullable: true)]
     protected ?int $tokenAmount = null;
 

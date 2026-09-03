@@ -7,19 +7,24 @@ namespace Tests\Guiziweb\SyliusTokenPlugin\Unit\Model;
 use Guiziweb\SyliusTokenPlugin\Model\TokenPackInterface;
 use Guiziweb\SyliusTokenPlugin\Model\TokenPackTrait;
 use PHPUnit\Framework\TestCase;
+use Sylius\Bundle\CoreBundle\Validator\Constraints\MaxIntegerValidator;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Tests\Guiziweb\SyliusTokenPlugin\Entity\Product\ProductVariant;
 
 final class TokenPackTraitTest extends TestCase
 {
     private const NOT_SHIPPABLE = 'guiziweb_sylius_token.product_variant.token_pack_is_not_shippable';
 
+    private const MAX_INT = 2147483647;
+
     public function testAPackAloneIsValid(): void
     {
         $variant = $this->createVariant();
         $variant->setTokenAmount(100);
 
-        self::assertCount(0, Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator()->validate($variant, null, ['sylius']));
+        self::assertCount(0, $this->validator()->validate($variant, null, ['sylius']));
     }
 
     public function testAPackWithoutValidityNeverExpires(): void
@@ -70,7 +75,7 @@ final class TokenPackTraitTest extends TestCase
         $variant->setTokenAmount(100);
         $variant->setTokenValidityMonths(-3);
 
-        $violations = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator()->validate($variant, null, ['sylius']);
+        $violations = $this->validator()->validate($variant, null, ['sylius']);
 
         self::assertCount(1, $violations);
     }
@@ -101,14 +106,21 @@ final class TokenPackTraitTest extends TestCase
         self::assertSame([], $this->shippingViolations($variant));
     }
 
+    private function validator(): ValidatorInterface
+    {
+        return Validation::createValidatorBuilder()
+            ->enableAttributeMapping()
+            ->setConstraintValidatorFactory(new ConstraintValidatorFactory([
+                'sylius_max_integer' => new MaxIntegerValidator(self::MAX_INT),
+            ]))
+            ->getValidator()
+        ;
+    }
+
     /** @return array<int, string> */
     private function shippingViolations(ProductVariant $variant): array
     {
-        $violations = Validation::createValidatorBuilder()
-            ->enableAttributeMapping()
-            ->getValidator()
-            ->validate($variant, null, ['sylius'])
-        ;
+        $violations = $this->validator()->validate($variant, null, ['sylius']);
 
         $messages = [];
 

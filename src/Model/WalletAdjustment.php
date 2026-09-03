@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusTokenPlugin\Model;
 
+use Sylius\Bundle\CoreBundle\Validator\Constraints\MaxInteger;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class WalletAdjustment
@@ -17,6 +18,7 @@ final class WalletAdjustment
 
     #[Assert\NotBlank]
     #[Assert\Positive]
+    #[MaxInteger]
     public ?int $amount = null;
 
     #[Assert\NotBlank]
