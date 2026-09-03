@@ -12,10 +12,14 @@ use Guiziweb\SyliusTokenPlugin\Model\TokenCredit;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperatorInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletProviderInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Resource\Factory\FactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tests\Guiziweb\SyliusTokenPlugin\Integration\ContainerTrait;
 
 final class LedgerSurvivesCustomerRemovalTest extends KernelTestCase
 {
+    use ContainerTrait;
+
     private EntityManagerInterface $entityManager;
 
     private WalletOperatorInterface $operator;
@@ -26,9 +30,9 @@ final class LedgerSurvivesCustomerRemovalTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $this->entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
-        $this->operator = self::getContainer()->get(WalletOperatorInterface::class);
-        $this->provider = self::getContainer()->get(WalletProviderInterface::class);
+        $this->entityManager = self::service(EntityManagerInterface::class, 'doctrine.orm.entity_manager');
+        $this->operator = self::service(WalletOperatorInterface::class);
+        $this->provider = self::service(WalletProviderInterface::class);
         $this->entityManager->beginTransaction();
     }
 
@@ -64,27 +68,33 @@ final class LedgerSurvivesCustomerRemovalTest extends KernelTestCase
     /** @return array<int, TokenBatchInterface> */
     private function batchesOf(int $walletId): array
     {
-        return $this->entityManager
+        /** @var array<int, TokenBatchInterface> $batches */
+        $batches = $this->entityManager
             ->createQuery('SELECT b FROM Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatch b WHERE b.wallet = :wallet')
             ->setParameter('wallet', $walletId)
             ->getResult()
         ;
+
+        return $batches;
     }
 
     /** @return array<int, TokenTransactionInterface> */
     private function transactionsOf(int $walletId): array
     {
-        return $this->entityManager
+        /** @var array<int, TokenTransactionInterface> $transactions */
+        $transactions = $this->entityManager
             ->createQuery('SELECT t FROM Guiziweb\SyliusTokenPlugin\Entity\TokenTransaction\TokenTransaction t WHERE t.wallet = :wallet')
             ->setParameter('wallet', $walletId)
             ->getResult()
         ;
+
+        return $transactions;
     }
 
     private function customer(): CustomerInterface
     {
         /** @var CustomerInterface $customer */
-        $customer = self::getContainer()->get('sylius.factory.customer')->createNew();
+        $customer = self::service(FactoryInterface::class, 'sylius.factory.customer')->createNew();
         $customer->setEmail(uniqid('ledger-test-', true) . '@example.com');
         $customer->setFirstName('Ledger');
         $customer->setLastName('Test');

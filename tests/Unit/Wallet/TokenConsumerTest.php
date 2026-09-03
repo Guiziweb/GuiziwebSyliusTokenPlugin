@@ -7,8 +7,8 @@ namespace Tests\Guiziweb\SyliusTokenPlugin\Unit\Wallet;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenPrice\TokenPriceInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenWallet\TokenWalletInterface;
 use Guiziweb\SyliusTokenPlugin\Exception\TokenPriceNotAvailableException;
-use Guiziweb\SyliusTokenPlugin\Wallet\TokenConsumer;
 use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
+use Guiziweb\SyliusTokenPlugin\Wallet\TokenConsumer;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperatorInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletProviderInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -18,6 +18,7 @@ use Sylius\Resource\Doctrine\Persistence\RepositoryInterface;
 
 final class TokenConsumerTest extends TestCase
 {
+    /** @var RepositoryInterface<TokenWalletInterface>&MockObject */
     private RepositoryInterface&MockObject $walletRepository;
 
     private WalletOperatorInterface&MockObject $walletOperator;

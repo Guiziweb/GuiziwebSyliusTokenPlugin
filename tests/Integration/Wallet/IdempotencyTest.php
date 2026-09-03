@@ -11,10 +11,14 @@ use Guiziweb\SyliusTokenPlugin\Model\TokenDebit;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletOperatorInterface;
 use Guiziweb\SyliusTokenPlugin\Wallet\WalletProviderInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Resource\Factory\FactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Tests\Guiziweb\SyliusTokenPlugin\Integration\ContainerTrait;
 
 final class IdempotencyTest extends KernelTestCase
 {
+    use ContainerTrait;
+
     private EntityManagerInterface $entityManager;
 
     private WalletOperatorInterface $operator;
@@ -25,9 +29,9 @@ final class IdempotencyTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $this->entityManager = self::getContainer()->get('doctrine.orm.entity_manager');
-        $this->operator = self::getContainer()->get(WalletOperatorInterface::class);
-        $this->provider = self::getContainer()->get(WalletProviderInterface::class);
+        $this->entityManager = self::service(EntityManagerInterface::class, 'doctrine.orm.entity_manager');
+        $this->operator = self::service(WalletOperatorInterface::class);
+        $this->provider = self::service(WalletProviderInterface::class);
         $this->entityManager->beginTransaction();
     }
 
@@ -91,24 +95,32 @@ final class IdempotencyTest extends KernelTestCase
 
     private function countBatches(TokenWalletInterface $wallet): int
     {
-        return (int) $this->entityManager->getConnection()->fetchOne(
+        /** @var int|string $scalar */
+        /** @var int|string $scalar */
+        $scalar = $this->entityManager->getConnection()->fetchOne(
             'SELECT COUNT(*) FROM guiziweb_sylius_token_batch WHERE wallet_id = :wallet',
             ['wallet' => $wallet->getId()],
         );
+
+        return (int) $scalar;
     }
 
     private function countTransactions(TokenWalletInterface $wallet, string $type): int
     {
-        return (int) $this->entityManager->getConnection()->fetchOne(
+        /** @var int|string $scalar */
+        /** @var int|string $scalar */
+        $scalar = $this->entityManager->getConnection()->fetchOne(
             'SELECT COUNT(*) FROM guiziweb_sylius_token_transaction WHERE wallet_id = :wallet AND type = :type',
             ['wallet' => $wallet->getId(), 'type' => $type],
         );
+
+        return (int) $scalar;
     }
 
     private function wallet(): TokenWalletInterface
     {
         /** @var CustomerInterface $customer */
-        $customer = self::getContainer()->get('sylius.factory.customer')->createNew();
+        $customer = self::service(FactoryInterface::class, 'sylius.factory.customer')->createNew();
         $customer->setEmail(uniqid('idempotency-', true) . '@example.com');
         $customer->setFirstName('Idempotency');
         $customer->setLastName('Test');

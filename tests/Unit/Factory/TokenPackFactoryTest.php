@@ -16,6 +16,7 @@ use Webmozart\Assert\InvalidArgumentException;
 
 final class TokenPackFactoryTest extends TestCase
 {
+    /** @var ProductFactoryInterface<\Sylius\Component\Product\Model\ProductInterface>&MockObject */
     private ProductFactoryInterface&MockObject $decorated;
 
     protected function setUp(): void

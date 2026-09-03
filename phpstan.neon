@@ -1,9 +1,14 @@
+includes:
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-webmozart-assert/extension.neon
+
 parameters:
     level: max
     reportUnmatchedIgnoredErrors: false
     paths:
         - src
-        - tests/Behat
+        - tests
 
     excludePaths:
         # Makes PHPStan crash
