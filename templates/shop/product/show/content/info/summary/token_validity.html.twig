@@ -1,0 +1,13 @@
+{% set variant = hookable_metadata.context.variant|default(null) %}
+
+{% if variant is not null and variant.tokenValidityMonths is defined and variant.tokenValidityMonths > 0 %}
+    {% set months = variant.tokenValidityMonths %}
+
+    <div class="text-body-secondary small mb-3" {{ sylius_test_html_attribute('token-validity') }}>
+        {% if months % 12 == 0 %}
+            {{ 'guiziweb_sylius_token.ui.validity_years'|trans({ '%count%': months // 12 }) }}
+        {% else %}
+            {{ 'guiziweb_sylius_token.ui.validity_months'|trans({ '%count%': months }) }}
+        {% endif %}
+    </div>
+{% endif %}

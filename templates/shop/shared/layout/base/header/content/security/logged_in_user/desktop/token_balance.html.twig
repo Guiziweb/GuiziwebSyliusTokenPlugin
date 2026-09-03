@@ -3,6 +3,6 @@
     <small aria-hidden="true" role="presentation" class="text-black px-1">|</small>
     <a href="{{ path('guiziweb_sylius_token_shop_account_tokens_index') }}" class="btn btn-transparent px-1 d-flex align-items-center gap-1">
         {{ ux_icon('tabler:coins') }}
-        <span>{{ balance }}</span>
+        <span {{ sylius_test_html_attribute('header-token-balance') }}>{{ balance }}</span>
     </a>
 {% endif %}

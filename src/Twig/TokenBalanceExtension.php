@@ -13,7 +13,9 @@ final class TokenBalanceExtension extends AbstractExtension
     {
         return [
             new TwigFunction('guiziweb_token_balance', [TokenBalanceRuntime::class, 'getBalance']),
+            new TwigFunction('guiziweb_token_next_expiring_batch', [TokenBalanceRuntime::class, 'getNextExpiringBatch']),
             new TwigFunction('guiziweb_customer_wallet', [CustomerWalletRuntime::class, 'getWallet']),
+            new TwigFunction('guiziweb_wallet_spendable_balance', [CustomerWalletRuntime::class, 'getSpendableBalance']),
             new TwigFunction('guiziweb_customer_token_statistics', [CustomerWalletRuntime::class, 'getStatistics']),
         ];
     }

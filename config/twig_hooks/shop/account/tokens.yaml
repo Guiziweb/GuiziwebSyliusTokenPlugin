@@ -11,10 +11,10 @@ sylius_twig_hooks:
         'guiziweb_sylius_token.shop.account.tokens.index.content.main':
             balance:
                 template: '@GuiziwebSyliusTokenPlugin/shop/account/tokens/index/content/main/balance.html.twig'
-                priority: 100
+                priority: -10
             grid:
                 template: '@SyliusShop/shared/grid.html.twig'
-                priority: 0
+                priority: -20
 
         'guiziweb_sylius_token.shop.account.tokens.index.content.main.header':
             title:

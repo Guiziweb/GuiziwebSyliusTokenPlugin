@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.product.show.content.info.summary':
+            guiziweb_token_validity:
+                template: '@GuiziwebSyliusTokenPlugin/shop/product/show/content/info/summary/token_validity.html.twig'
+                priority: 250

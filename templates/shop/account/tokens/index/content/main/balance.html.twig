@@ -1,9 +1,20 @@
+{% set next_expiring = guiziweb_token_next_expiring_batch() %}
+
 <div class="card border-0 bg-body-tertiary mb-4">
     <div class="card-body d-flex align-items-center gap-3">
         {{ ux_icon('tabler:coins', { class: 'icon icon-lg' }) }}
         <div>
             <div class="text-muted small">{{ 'guiziweb_sylius_token.ui.balance'|trans }}</div>
-            <div class="h2 mb-0">{{ guiziweb_token_balance() }}</div>
+            <div class="h2 mb-0" {{ sylius_test_html_attribute('token-balance') }}>{{ guiziweb_token_balance() }}</div>
+
+            {% if next_expiring is not null %}
+                <div class="text-body-secondary small mt-2" {{ sylius_test_html_attribute('token-next-expiration') }}>
+                    {{ 'guiziweb_sylius_token.ui.next_expiration'|trans({
+                        '%amount%': next_expiring.remainingAmount,
+                        '%date%': next_expiring.expiresAt|format_date('medium'),
+                    }) }}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
