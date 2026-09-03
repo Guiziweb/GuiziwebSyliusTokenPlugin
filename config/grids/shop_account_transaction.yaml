@@ -30,8 +30,9 @@ sylius_grid:
                     sortable: ~
                     options:
                         template: "@GuiziwebSyliusTokenPlugin/shared/grid/field/token_amount.html.twig"
-                order:
+                context:
                     type: twig
-                    label: sylius.ui.order
+                    label: guiziweb_sylius_token.ui.transaction.context
+                    path: .
                     options:
-                        template: "@GuiziwebSyliusTokenPlugin/shop/account/tokens/grid/field/order.html.twig"
+                        template: "@GuiziwebSyliusTokenPlugin/shop/account/tokens/grid/field/context.html.twig"
