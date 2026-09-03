@@ -1,0 +1,25 @@
+sylius_twig_hooks:
+    hooks:
+        'guiziweb_sylius_token.admin.token_pack.create.content.header.title_block':
+            title:
+                template: '@SyliusAdmin/shared/crud/common/content/header/title_block/title.html.twig'
+                configuration:
+                    title: guiziweb_sylius_token.ui.new_token_pack
+                    icon: 'tabler:coins'
+                priority: 100
+
+        'guiziweb_sylius_token.admin.token_pack.create.content.form.side_navigation':
+            shipping:
+                enabled: false
+            inventory:
+                enabled: false
+
+        'guiziweb_sylius_token.admin.token_pack.create.content.form.sections':
+            shipping:
+                enabled: false
+            inventory:
+                enabled: false
+
+        'guiziweb_sylius_token.admin.token_pack.create.content.form.sections.general':
+            shipping_required:
+                enabled: false

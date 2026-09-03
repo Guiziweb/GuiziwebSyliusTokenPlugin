@@ -1,0 +1,10 @@
+{% set variant = hookable_metadata.context.variant %}
+{% set months = variant.tokenValidityMonths|default(null) %}
+
+<td class="text-center" {{ sylius_test_html_attribute('token-validity-months') }}>
+    {% if months %}
+        {{ months }}
+    {% else %}
+        <span class="text-body-secondary">{{ 'guiziweb_sylius_token.ui.never_expires'|trans }}</span>
+    {% endif %}
+</td>

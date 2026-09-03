@@ -1,0 +1,33 @@
+sylius_twig_hooks:
+    hooks:
+        'guiziweb_sylius_token.admin.token_pack.show.content.page_body.general.simple_product#head':
+            shipping_required:
+                enabled: false
+            tracked:
+                enabled: false
+            current_stock:
+                enabled: false
+            token_amount:
+                template: '@GuiziwebSyliusTokenPlugin/admin/token_pack/show/head/token_amount.html.twig'
+                priority: 350
+            token_validity:
+                template: '@GuiziwebSyliusTokenPlugin/admin/token_pack/show/head/token_validity.html.twig'
+                priority: 340
+
+        'guiziweb_sylius_token.admin.token_pack.show.content.page_body.general.simple_product#tab':
+            shipping_required:
+                enabled: false
+            tracked:
+                enabled: false
+            current_stock:
+                enabled: false
+            token_amount:
+                template: '@GuiziwebSyliusTokenPlugin/admin/token_pack/show/tab/token_amount.html.twig'
+                priority: 350
+            token_validity:
+                template: '@GuiziwebSyliusTokenPlugin/admin/token_pack/show/tab/token_validity.html.twig'
+                priority: 340
+
+        'guiziweb_sylius_token.admin.token_pack.show.content.page_body.general.simple_product#details':
+            shipping:
+                enabled: false

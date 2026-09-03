@@ -1,3 +1,9 @@
+{% set form = hookable_metadata.context.form %}
+
 <div class="mb-4">
-    {{ form_row(hookable_metadata.context.form.tokenAmount) }}
+    {{ form_row(form.tokenAmount) }}
+</div>
+
+<div class="mb-4">
+    {{ form_row(form.tokenValidityMonths) }}
 </div>

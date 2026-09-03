@@ -1,0 +1,11 @@
+{% from '@SyliusAdmin/shared/helper/breadcrumbs.html.twig' import breadcrumbs %}
+
+{% set resource = hookable_metadata.context.resource %}
+{% set name = resource.translations[app.locale].name|default(resource.code|default(resource.id)) %}
+
+{{ breadcrumbs([
+    { name: 'sylius.ui.dashboard', url: path('sylius_admin_dashboard'), active: false },
+    { name: 'guiziweb_sylius_token.ui.token_products', url: path('guiziweb_sylius_token_admin_token_product_index'), active: false },
+    { name: name, url: path('guiziweb_sylius_token_admin_token_product_show', { id: resource.id }), active: false },
+    { name: 'sylius.ui.edit'|trans, active: false },
+]) }}
