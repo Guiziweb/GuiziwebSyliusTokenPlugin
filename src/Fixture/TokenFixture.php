@@ -6,7 +6,7 @@ namespace Guiziweb\SyliusTokenPlugin\Fixture;
 
 use Doctrine\Persistence\ObjectManager;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenPrice\TokenPriceInterface;
-use Guiziweb\SyliusTokenPlugin\Factory\TokenPackFactory;
+use Guiziweb\SyliusTokenPlugin\Factory\TokenPackFactoryInterface;
 use Guiziweb\SyliusTokenPlugin\Model\TokenPackInterface;
 use Sylius\Bundle\FixturesBundle\Fixture\AbstractFixture;
 use Sylius\Component\Core\Formatter\StringInflector;
@@ -30,7 +30,8 @@ final class TokenFixture extends AbstractFixture
      */
     public function __construct(
         private readonly ObjectManager $objectManager,
-        private readonly TokenPackFactory $productFactory,
+        /** @var TokenPackFactoryInterface<\Sylius\Component\Product\Model\ProductInterface> */
+        private readonly TokenPackFactoryInterface $productFactory,
         private readonly FactoryInterface $channelPricingFactory,
         private readonly RepositoryInterface $channelRepository,
         private readonly RepositoryInterface $productRepository,

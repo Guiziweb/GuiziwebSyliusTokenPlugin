@@ -12,9 +12,9 @@ use Sylius\Component\Product\Model\ProductInterface;
 use Webmozart\Assert\Assert;
 
 /**
- * @implements ProductFactoryInterface<ProductInterface>
+ * @implements TokenPackFactoryInterface<ProductInterface>
  */
-final class TokenPackFactory implements ProductFactoryInterface
+final class TokenPackFactory implements TokenPackFactoryInterface
 {
     /** @param ProductFactoryInterface<ProductInterface> $decorated */
     public function __construct(
