@@ -1,22 +1,42 @@
+# Dependencies
 /vendor/
-/var/
-/.playwright-mcp/
-/node_modules/
-/drivers/
+/node_modules
 /composer.lock
+/yarn.lock
 
+# Build artifacts
 /etc/build/*
 !/etc/build/.gitignore
 
+# Test files
 /.phpunit.result.cache
 /behat.yml
 /phpunit.xml
-/compose.override.yml
-.phpunit.result.cache
 
-# Symfony CLI https://symfony.com/doc/current/setup/symfony_server.html#different-php-settings-per-project
+# Docker
+/compose.override.yml
+
+# Symfony CLI
 /.php-version
 /php.ini
 
+# Environment files
+.env.local
+.env.*.local
 /tests/TestApplication/.env.local
 /tests/TestApplication/.env.*.local
+
+# Generated files
+/var/
+/public/
+/drivers/
+
+# IDE
+/.idea/
+/.vscode/
+
+# Claude Code
+/.claude/
+/.mcp.json
+.playwright-mcp/
+*.png

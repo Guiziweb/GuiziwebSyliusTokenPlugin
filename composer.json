@@ -2,6 +2,8 @@
     "name": "guiziweb/sylius-token-plugin",
     "type": "sylius-plugin",
     "description": "Prepaid token wallet for Sylius: customers buy tokens and spend them on services.",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "keywords": [
         "sylius",
         "sylius-plugin",
@@ -54,17 +56,14 @@
         "symfony/web-profiler-bundle": "^6.4 || ^7.4",
         "symfony/webpack-encore-bundle": "^2.2"
     },
-    "autoload": {
-        "psr-4": {
-            "Guiziweb\\SyliusTokenPlugin\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\Guiziweb\\SyliusTokenPlugin\\": [
-                "tests/",
-                "tests/TestApplication/src/"
-            ]
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false,
+            "php-http/discovery": false,
+            "phpstan/extension-installer": true,
+            "symfony/flex": true,
+            "symfony/runtime": true
         }
     },
     "extra": {
@@ -76,14 +75,17 @@
         },
         "public-dir": "vendor/sylius/test-application/public"
     },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": false,
-            "php-http/discovery": false,
-            "phpstan/extension-installer": true,
-            "symfony/flex": true,
-            "symfony/runtime": true
+    "autoload": {
+        "psr-4": {
+            "Guiziweb\\SyliusTokenPlugin\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Guiziweb\\SyliusTokenPlugin\\": [
+                "tests/",
+                "tests/TestApplication/src/"
+            ]
         }
     },
     "scripts": {
@@ -101,7 +103,5 @@
             "@database-reset",
             "@frontend-clear"
         ]
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
