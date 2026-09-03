@@ -1,14 +1,54 @@
 {% set wallet = hookable_metadata.context.wallet %}
 {% set balance = hookable_metadata.context.balance %}
 {% set form = hookable_metadata.context.form %}
+{% set customer = wallet.customer %}
 
 {% form_theme form '@SyliusAdmin/shared/form_theme.html.twig' %}
 
 <div class="container-xl">
     <div class="page-header mb-3">
-        <h1 class="page-title">{{ 'guiziweb_sylius_token.ui.adjust'|trans }}</h1>
-        <div class="text-muted">
-            {{ wallet.customer.email ?? '' }} — {{ 'guiziweb_sylius_token.ui.balance'|trans }}: <strong>{{ balance }}</strong>
+        <h1 class="page-title">
+            {{ ux_icon('tabler:coins', { class: 'icon me-2' }) }}{{ 'guiziweb_sylius_token.ui.adjust'|trans }}
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6 mb-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="bg-gray text-muted avatar">{{ ux_icon('tabler:user') }}</span>
+                        </div>
+                        <div class="col">
+                            <div>{{ 'sylius.ui.customer'|trans }}</div>
+                            <div class="h3 mb-0">
+                                {% if customer is not null %}
+                                    <a href="{{ path('sylius_admin_customer_show', { id: customer.id }) }}">{{ customer.email }}</a>
+                                {% else %}
+                                    <span class="text-muted">&mdash;</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 mb-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="bg-gray text-muted avatar">{{ ux_icon('tabler:wallet') }}</span>
+                        </div>
+                        <div class="col">
+                            <div>{{ 'guiziweb_sylius_token.ui.balance'|trans }}</div>
+                            <div class="h2 mb-0" {{ sylius_test_html_attribute('wallet-balance') }}>{{ balance }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

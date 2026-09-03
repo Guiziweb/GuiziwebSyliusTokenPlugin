@@ -16,9 +16,11 @@ sylius_grid:
                     options:
                         template: "@GuiziwebSyliusTokenPlugin/admin/wallet/grid/field/customer.html.twig"
                 balance:
-                    type: string
+                    type: twig
                     label: guiziweb_sylius_token.ui.balance
-                    sortable: ~
+                    path: .
+                    options:
+                        template: "@GuiziwebSyliusTokenPlugin/admin/wallet/grid/field/balance.html.twig"
                 createdAt:
                     type: datetime
                     label: sylius.ui.created_at
@@ -36,9 +38,9 @@ sylius_grid:
                     adjust:
                         type: default
                         label: guiziweb_sylius_token.ui.adjust
+                        icon: 'tabler:coins'
                         options:
                             link:
                                 route: guiziweb_sylius_token_admin_wallet_adjust
                                 parameters:
                                     id: resource.id
-                                icon: 'tabler:coins'

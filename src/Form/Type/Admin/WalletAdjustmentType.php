@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusTokenPlugin\Form\Type\Admin;
 
+use Guiziweb\SyliusTokenPlugin\Model\WalletAdjustment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -11,8 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Positive;
 
 final class WalletAdjustmentType extends AbstractType
 {
@@ -22,31 +21,25 @@ final class WalletAdjustmentType extends AbstractType
             ->add('direction', ChoiceType::class, [
                 'label' => 'guiziweb_sylius_token.form.adjustment.direction',
                 'choices' => [
-                    'guiziweb_sylius_token.ui.adjustment.credit' => 'credit',
-                    'guiziweb_sylius_token.ui.adjustment.debit' => 'debit',
+                    'guiziweb_sylius_token.ui.adjustment.credit' => WalletAdjustment::DIRECTION_CREDIT,
+                    'guiziweb_sylius_token.ui.adjustment.debit' => WalletAdjustment::DIRECTION_DEBIT,
                 ],
                 'expanded' => true,
-                'data' => 'credit',
             ])
             ->add('amount', IntegerType::class, [
                 'label' => 'guiziweb_sylius_token.form.adjustment.amount',
-                'constraints' => [new NotBlank(), new Positive()],
             ])
             ->add('reason', TextType::class, [
                 'label' => 'guiziweb_sylius_token.form.adjustment.reason',
                 'help' => 'guiziweb_sylius_token.form.adjustment.reason_help',
-                'constraints' => [new NotBlank()],
             ])
-            ->add('operationId', HiddenType::class, [
-                'data' => bin2hex(random_bytes(16)),
-                'constraints' => [new NotBlank()],
-            ])
+            ->add('operationId', HiddenType::class)
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => null]);
+        $resolver->setDefaults(['data_class' => WalletAdjustment::class]);
     }
 
     public function getBlockPrefix(): string

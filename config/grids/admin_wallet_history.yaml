@@ -16,7 +16,7 @@ sylius_grid:
                 createdAt:
                     type: datetime
                     label: sylius.ui.date
-                    sortable: ~
+                    sortable: id
                     options:
                         format: Y-m-d H:i
                 type:

@@ -18,15 +18,18 @@
                 <p class="text-muted mb-0">{{ 'guiziweb_sylius_token.ui.no_wallet'|trans }}</p>
             {% else %}
                 {% set statistics = guiziweb_customer_token_statistics(customer) %}
+                {% set spendable = guiziweb_wallet_spendable_balance(wallet) %}
+                {% set expired = statistics.credited - statistics.spent - spendable %}
                 <div class="row">
                     {% set tiles = [
-                        { icon: 'tabler:wallet', label: 'guiziweb_sylius_token.ui.balance', value: wallet.balance, test: 'balance' },
+                        { icon: 'tabler:wallet', label: 'guiziweb_sylius_token.ui.balance', value: spendable, test: 'balance' },
                         { icon: 'tabler:arrow-down-circle', label: 'guiziweb_sylius_token.ui.total_credited', value: statistics.credited, test: 'credited' },
                         { icon: 'tabler:arrow-up-circle', label: 'guiziweb_sylius_token.ui.total_spent', value: statistics.spent, test: 'spent' },
+                        { icon: 'tabler:hourglass-off', label: 'guiziweb_sylius_token.ui.total_expired', value: expired, test: 'expired' },
                     ] %}
 
                     {% for tile in tiles %}
-                        <div class="col-sm-12 col-md-4 mb-3">
+                        <div class="col-sm-12 col-md-3 mb-3">
                             <div class="card card-sm">
                                 <div class="card-body">
                                     <div class="row align-items-center">
