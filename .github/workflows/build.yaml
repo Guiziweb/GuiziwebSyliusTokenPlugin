@@ -94,31 +94,43 @@ jobs:
 
             -
                 name: Run unit tests
-                run: vendor/bin/phpunit --colors=always --testsuite=unit
+                run: make phpunit-unit
 
             -
                 name: Validate composer.json
-                run: composer validate --ansi --strict
+                run: make composer-validate
+
+            -
+                name: Audit dependencies
+                run: make audit
 
             -
                 name: Validate container
-                run: vendor/bin/console lint:container
+                run: make lint-container
+
+            -
+                name: Validate Twig templates
+                run: make lint-twig
+
+            -
+                name: Validate YAML files
+                run: make lint-yaml
 
             -
                 name: Validate Doctrine mapping
-                run: vendor/bin/console doctrine:schema:validate --skip-sync
+                run: make schema-validate
 
             -
                 name: Run PHPStan
-                run: vendor/bin/phpstan analyse -c phpstan.neon
+                run: make phpstan
 
             -
                 name: Run ECS
-                run: vendor/bin/ecs check
+                run: make ecs
 
             -
                 name: Run Non-unit PHPUnit tests
-                run: vendor/bin/phpunit --colors=always --testsuite=non-unit
+                run: make phpunit-non-unit
 
             -
                 name: Run Behat
