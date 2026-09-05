@@ -36,7 +36,7 @@ Every movement is written to an append-only ledger. Tokens are held in batches, 
 ## Requirements
 
 - PHP ^8.2
-- Sylius ^2.0
+- Sylius ^2.1
 - MySQL, MariaDB or PostgreSQL
 
 ## Quick install

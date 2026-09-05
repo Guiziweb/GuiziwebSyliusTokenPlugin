@@ -23,7 +23,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "sylius/sylius": "^2.0"
+        "doctrine/orm": "^3.0",
+        "sylius/sylius": "^2.1"
     },
     "require-dev": {
         "behat/behat": "^3.16",
