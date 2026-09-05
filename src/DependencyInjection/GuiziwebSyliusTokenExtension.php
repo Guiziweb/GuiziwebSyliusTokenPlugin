@@ -42,7 +42,7 @@ final class GuiziwebSyliusTokenExtension extends AbstractResourceExtension imple
 
     protected function getMigrationsNamespace(): string
     {
-        return 'DoctrineMigrations';
+        return 'Guiziweb\\SyliusTokenPlugin\\Migrations';
     }
 
     protected function getMigrationsDirectory(): string
