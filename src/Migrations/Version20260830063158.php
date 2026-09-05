@@ -11,7 +11,7 @@ final class Version20260830063158 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Adds the token wallet, its batches, its ledger and the token price list.';
+        return 'Creates the token wallet, its batches, its ledger, the operation registry and the price list.';
     }
 
     public function up(Schema $schema): void
@@ -26,10 +26,14 @@ final class Version20260830063158 extends AbstractMigration
         $this->addSql('ALTER TABLE guiziweb_sylius_token_transaction ADD CONSTRAINT FK_98558A608D9F6D38 FOREIGN KEY (order_id) REFERENCES sylius_order (id) ON DELETE SET NULL');
         $this->addSql('ALTER TABLE guiziweb_sylius_token_wallet ADD CONSTRAINT FK_3904A3819395C3F3 FOREIGN KEY (customer_id) REFERENCES sylius_customer (id) ON DELETE SET NULL');
         $this->addSql('ALTER TABLE sylius_product_variant ADD token_amount INT DEFAULT NULL, ADD token_validity_months INT DEFAULT NULL');
+        $this->addSql('CREATE TABLE guiziweb_sylius_token_operation (id INT AUTO_INCREMENT NOT NULL, wallet_id INT NOT NULL, idempotency_key VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_6C551913712520F3 (wallet_id), UNIQUE INDEX guiziweb_token_operation_replay_idx (wallet_id, idempotency_key, type), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE guiziweb_sylius_token_operation ADD CONSTRAINT FK_6C551913712520F3 FOREIGN KEY (wallet_id) REFERENCES guiziweb_sylius_token_wallet (id) ON DELETE CASCADE');
     }
 
     public function down(Schema $schema): void
     {
+        $this->addSql('ALTER TABLE guiziweb_sylius_token_operation DROP FOREIGN KEY FK_6C551913712520F3');
+        $this->addSql('DROP TABLE guiziweb_sylius_token_operation');
         $this->addSql('ALTER TABLE guiziweb_sylius_token_batch DROP FOREIGN KEY FK_4B66B9F9712520F3');
         $this->addSql('ALTER TABLE guiziweb_sylius_token_transaction DROP FOREIGN KEY FK_98558A60712520F3');
         $this->addSql('ALTER TABLE guiziweb_sylius_token_transaction DROP FOREIGN KEY FK_98558A60F39EBE7A');
