@@ -38,8 +38,8 @@ final readonly class CustomerWalletRuntime implements RuntimeExtensionInterface
         /** @var array{credited: ?string, spent: ?string} $row */
         $row = $this->transactionRepository->createByCustomerQueryBuilder($customer)
             ->select(
-                'COALESCE(SUM(CASE WHEN o.type = :credit THEN o.amount ELSE 0 END), 0) AS credited',
-                'COALESCE(SUM(CASE WHEN o.type = :debit THEN -o.amount ELSE 0 END), 0) AS spent',
+                'SUM(CASE WHEN o.type = :credit THEN o.amount ELSE 0 END) AS credited',
+                'SUM(CASE WHEN o.type = :debit THEN -o.amount ELSE 0 END) AS spent',
             )
             ->setParameter('credit', TokenTransactionType::Credit->value)
             ->setParameter('debit', TokenTransactionType::Debit->value)

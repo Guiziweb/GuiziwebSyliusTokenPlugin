@@ -67,10 +67,11 @@ final class WalletOperatorTest extends KernelTestCase
         $customer = $this->customerWithoutWallet();
         $wallet = $this->provider->provideForCustomer($customer);
 
-        self::assertNull($wallet->getId());
+        self::assertTrue($this->entityManager->getUnitOfWork()->isScheduledForInsert($wallet));
 
         $this->operator->credit($wallet, new TokenCredit(50, uniqid('credit-', true)));
 
+        self::assertFalse($this->entityManager->getUnitOfWork()->isScheduledForInsert($wallet));
         self::assertNotNull($wallet->getId());
         self::assertSame(50, $this->operator->getBalance($wallet));
     }
@@ -95,6 +96,11 @@ final class WalletOperatorTest extends KernelTestCase
         self::assertSame(0, $remaining[$soonest->format('Y-m-d')]);
         self::assertSame(5, $remaining[$latest->format('Y-m-d')]);
         self::assertSame(10, $remaining['never']);
+    }
+
+    public function testAnEmptyWalletHasAZeroBalance(): void
+    {
+        self::assertSame(0, $this->operator->getBalance($this->emptyWallet()));
     }
 
     private function emptyWallet(): TokenWalletInterface

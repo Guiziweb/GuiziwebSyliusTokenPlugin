@@ -49,7 +49,7 @@ class TokenBatchRepository extends EntityRepository implements TokenBatchReposit
     public function getBalance(TokenWalletInterface $wallet, \DateTimeInterface $at): int
     {
         $balance = $this->createAvailableQueryBuilder($wallet, $at)
-            ->select('COALESCE(SUM(o.remainingAmount), 0)')
+            ->select('SUM(o.remainingAmount)')
             ->getQuery()
             ->getSingleScalarResult()
         ;

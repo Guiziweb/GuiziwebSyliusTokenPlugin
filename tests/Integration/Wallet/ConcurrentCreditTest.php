@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Guiziweb\SyliusTokenPlugin\Integration\Wallet;
 
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Guiziweb\SyliusTokenPlugin\Entity\TokenBatch\TokenBatch;
@@ -56,7 +57,9 @@ final class ConcurrentCreditTest extends KernelTestCase
 
         /** @phpstan-ignore argument.type */
         $connection = DriverManager::getConnection($params);
-        $connection->executeStatement('SET SESSION innodb_lock_wait_timeout = 5');
+        if ($connection->getDatabasePlatform() instanceof AbstractMySQLPlatform) {
+            $connection->executeStatement('SET SESSION innodb_lock_wait_timeout = 5');
+        }
 
         $this->otherEntityManager = new EntityManager($connection, $this->entityManager->getConfiguration());
 
