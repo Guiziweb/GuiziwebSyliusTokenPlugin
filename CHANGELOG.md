@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/Guiziweb/GuiziwebSyliusTokenPlugin/compare/v0.1.0...v0.1.1) (2026-09-05)
+
+
+### Bug Fixes
+
+* register the migrations under the plugin namespace ([1834c80](https://github.com/Guiziweb/GuiziwebSyliusTokenPlugin/commit/1834c80ed9f051389d4987b27a9a8be5b305b300))
+
 ## 0.1.0 (2026-09-05)
 
 
