@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/Guiziweb/GuiziwebSyliusTokenPlugin/compare/v0.1.1...v0.1.2) (2026-09-10)
+
+
+### Bug Fixes
+
+* repair the invalid dependabot configuration ([8edfdce](https://github.com/Guiziweb/GuiziwebSyliusTokenPlugin/commit/8edfdce0fc773e9d5d34ec421ed38393bd3bab00))
+* repair the invalid dependabot configuration ([a9aeee4](https://github.com/Guiziweb/GuiziwebSyliusTokenPlugin/commit/a9aeee4a4e5651d8f8abd62d17835222b1ff4331))
+
 ## [0.1.1](https://github.com/Guiziweb/GuiziwebSyliusTokenPlugin/compare/v0.1.0...v0.1.1) (2026-09-05)
 
 
